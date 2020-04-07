@@ -7,11 +7,21 @@ using System.Windows.Forms;
 
 namespace The_Game
 {
+    public enum PlayerState
+    {
+        Walking,
+        Jumping,
+        OnLadder,
+        Attacked
+    }
+
     public class Player
     {
         public int PlayerX { get; private set; }
         public int PlayerY { get; private set; }
         public static int Height = 100;
+        public static int Width = 100;
+        private static int step = 10;
 
         public GameState Game { get; }
 
@@ -20,7 +30,19 @@ namespace The_Game
             Game = game;
         }
 
-
+        public void Move(KeyEventArgs key)
+        {
+            switch (key.KeyCode)
+            {
+                case Keys.A:
+                    if
+                    PlayerX -= step;
+                    break;
+                case Keys.D:
+                    PlayerX += step;
+                    break;
+            }
+        }
     }
 
     public class GameState
@@ -37,10 +59,25 @@ namespace The_Game
 
     public class TestForm : Form
     {
+        private GameState gs;
+        public void Draw(PaintEventArgs args)
+        {
+            args.Graphics.FillRectangle(Brushes.Green, gs.Player.PlayerX, 300, Player.Width, Player.Height);
+        }
+
         public TestForm(GameState gs)
         {
-            KeyDown +=
-                }
+            this.gs = gs;
+            Paint += (sender, args) =>
+            {
+                Draw(args);
+            };
+            KeyDown += (sender, args) =>
+            {
+                gs.Player.Move(args);
+                Invalidate();
+            };
+        }
     }
 
     static class Program
@@ -53,7 +90,8 @@ namespace The_Game
         {
             //Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new TestForm());
+            var gs = new GameState(100, 100);
+            Application.Run(new TestForm(gs));
         }
     }
 }
