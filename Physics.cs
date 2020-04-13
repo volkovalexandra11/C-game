@@ -10,7 +10,7 @@ namespace The_Game
 {
     static class Physics
     {
-        private static Vector2 gravity = 10 * Vector2.UnitY;
+        private static Vector2 gravity = 0.0000001f * Vector2.UnitY;
 
         public static Vector2 GetVelocity(Vector2 velocity, float dt, Vector2? acceleration = null)
         {

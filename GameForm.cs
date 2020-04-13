@@ -15,11 +15,12 @@ namespace The_Game
     {
         private GameState gs { get; set; }
         private readonly Timer timer;
+        private HashSet<Keys> pressedKeys;
 
         protected override void OnPaint(PaintEventArgs e)
         {
             var horizontalScalar = ClientSize.Width / 1280f;
-            var verticalScalar = ClientSize.Height / 720f; //TODO; 1280*720 ?
+            var verticalScalar = ClientSize.Height / 720f; //TODO internal coords;  temp:1280*720
             e.Graphics.ScaleTransform(horizontalScalar, verticalScalar);
             DrawNormalizedForm(e.Graphics);
         }
@@ -29,12 +30,15 @@ namespace The_Game
             g.FillRectangle(Brushes.Green,
                 gs.Player.Pos.X - Player.Width / 2f, gs.Player.Pos.Y - Player.Height,
                 Player.Width, Player.Height);
+            g.FillRectangle(Brushes.OrangeRed,
+                0, 600, 1280, 1280 - 600);
         }
 
         public GameForm(GameState gs)
         {
             this.gs = gs;
             DoubleBuffered = true;
+            pressedKeys = new HashSet<Keys>();
             timer = new Timer() { Interval = (int)(gs.Dt / 1000) };
             KeyDown += (sender, args) =>
             {
@@ -47,6 +51,25 @@ namespace The_Game
                 Invalidate();
             };
             timer.Start();
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            HandleKey(e.KeyCode, true);
+        }
+
+        private void HandleKey(Keys e, bool down)
+        {
+            if (e == Keys.A) A = down;
+            if (e == Keys.D) D = down;
+            if (e == Keys.Space) Space = down;
+        }
+
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            HandleKey(e.KeyCode, false);
         }
     }
 }

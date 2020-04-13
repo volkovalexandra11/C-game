@@ -17,7 +17,7 @@ namespace The_Game
         public GameState(float dt)
         {
             Dt = dt;
-            Player = new Player(this) {Pos = new Vector2(300, 300) };
+            Player = new Player(this) {Pos = new Vector2(300, 600) };
             Level = new TestLevel(1000, 1000);
         }
     }
