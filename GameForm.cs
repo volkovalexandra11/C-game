@@ -15,42 +15,54 @@ namespace The_Game
     {
         private GameState gs { get; set; }
         private readonly Timer timer;
-        private HashSet<Keys> pressedKeys;
+        private readonly HashSet<Keys> pressedKeys;
+        public Size InternalSize { get; }
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            var horizontalScalar = ClientSize.Width / 1280f;
-            var verticalScalar = ClientSize.Height / 720f; //TODO internal coords;  temp:1280*720
-            e.Graphics.ScaleTransform(horizontalScalar, verticalScalar);
+            var horizontalScalar = ClientSize.Width / (float)InternalSize.Width;
+            var verticalScalar = ClientSize.Height / (float)InternalSize.Height; //BASIC internal coords 1800x1000
+            var minScalar = Math.Min(horizontalScalar, verticalScalar);
+            e.Graphics.ScaleTransform(minScalar, minScalar);
+            if (verticalScalar <= horizontalScalar)
+                e.Graphics.TranslateTransform((ClientSize.Width/verticalScalar - InternalSize.Width)/2, 0);
+            else
+                e.Graphics.TranslateTransform(0, (ClientSize.Height/horizontalScalar - InternalSize.Height)/2);
             DrawNormalizedForm(e.Graphics);
         }
 
-        public void DrawNormalizedForm(Graphics g)
+        private void DrawNormalizedForm(Graphics g)
         {
-            g.FillRectangle(Brushes.Green,
-                gs.Player.Pos.X - Player.Width / 2f, gs.Player.Pos.Y - Player.Height,
-                Player.Width, Player.Height);
-            g.FillRectangle(Brushes.OrangeRed,
-                0, 600, 1280, 1280 - 600);
+            gs.Level.Draw(g);
         }
 
         public GameForm(GameState gs)
         {
             this.gs = gs;
             DoubleBuffered = true;
+            BackColor = Color.Black;
             pressedKeys = new HashSet<Keys>();
+            InternalSize = new Size(1800, 1000);
             timer = new Timer() { Interval = (int)(gs.Dt / 1000) };
             KeyDown += (sender, args) =>
             {
                 gs.Player.UpdateState(args);
             };
             SizeChanged += (sender, args) => { Invalidate(); };
-            timer.Tick += (sender, args) =>
-            {
-                gs.Player.UpdatePosition();
-                Invalidate();
-            };
+            timer.Tick += OnTimerTick;
             timer.Start();
+        }
+
+        protected void OnTimerTick(object sender, EventArgs args)
+        {
+            gs.Player.UpdatePosition();
+            Invalidate();
+        }
+
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            HandleKey(e.KeyCode, false);
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
@@ -61,15 +73,10 @@ namespace The_Game
 
         private void HandleKey(Keys e, bool down)
         {
-            if (e == Keys.A) A = down;
-            if (e == Keys.D) D = down;
-            if (e == Keys.Space) Space = down;
-        }
-
-        protected override void OnKeyUp(KeyEventArgs e)
-        {
-            base.OnKeyDown(e);
-            HandleKey(e.KeyCode, false);
+            if (down)
+                pressedKeys.Add(e);
+            else if (pressedKeys.Contains(e))
+                pressedKeys.Remove(e);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace The_Game
         [STAThread]
         static void Main()
         {
-            var gs = new GameState(1000f * 1);
+            var gs = new GameState(1000f * 3f);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new GameForm(gs));
