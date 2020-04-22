@@ -98,17 +98,33 @@ namespace The_Game
         public void StartGame(GameState gameState = null)
         {
             Game = gameState ?? new GameState();
+            FillPlayerActions();
             Stage = GameplayStage.InGame;
             Timer = new Timer() { Interval = TimerInterval };
             Timer.Tick += OnTimerTick;
             Timer.Start();
         }
 
+        private void FillPlayerActions()
+        {
+            PlayerAction action;
+            foreach (var pressedKey in pressedKeys)
+            {
+                if (PlayerActions.ActionByKey.TryGetValue(pressedKey, out action))
+                    Game.PlayerActions.Add(action);
+            }
+            foreach (var pressedButton in pressedButtons)
+            {
+                if (PlayerActions.ActionByButton.TryGetValue(pressedButton, out action))
+                    Game.PlayerActions.Add(action);
+            }
+        }
+
         public void StartCutscene(ICutscene cutscene = null)
         {
             CurrentCutscene = cutscene ?? new StartCutscene(this);
             Stage = GameplayStage.Cutscene;
-            Controls.Clear();
+            while (Controls.Count > 0) Controls[0].Dispose();
             Timer = new Timer() { Interval = TimerInterval };
             Timer.Tick += (_, __) => { Invalidate(); };
             Timer.Start();
@@ -131,12 +147,15 @@ namespace The_Game
         public GameForm(int timerInterval)
         {
             ClientSize = new Size(1260, 700);
+            InternalSize = new Size(1800, 1000);
+
             SizeChanged += (sender, args) => Invalidate();
             DoubleBuffered = true;
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);  // performance?
             BackColor = Color.Black;
+
             TimerInterval = timerInterval;
-            InternalSize = new Size(1800, 1000);
+
             pressedKeys = new HashSet<Keys>();
             pressedButtons = new HashSet<MouseButtons>();
             Stage = GameplayStage.MainMenu;
