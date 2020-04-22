@@ -20,7 +20,7 @@ namespace The_Game.Cutscenes
         {
             "You, the loyal Knight, have been summoned to the court of the King.",
             "He tasked you with the mission of an utmost importance:",
-            "You should put the flames of the rebellion which has torn the country apart to the rest."
+            "You should put out the flames of the rebellion which has torn the country apart."
         };
 
         public int LineInd { get; set; }
