@@ -14,6 +14,7 @@ namespace The_Game
         public bool Passable => true;
         public DrawingPriority Priority => DrawingPriority.Background;
         public RectangleF Hitbox { get; }
+        public string TextureDirectory => "Textures";
         public string Texture => "Background.png";
         public string[] Textures => new[] { Texture };
 
@@ -29,6 +30,7 @@ namespace The_Game
         public bool Passable => false;
         public DrawingPriority Priority => DrawingPriority.SolidSurface;
         public RectangleF Hitbox { get; }
+        public string TextureDirectory => "Textures";
         public string Texture => "Ground.png";
         public string[] Textures => new[] { Texture };
 
@@ -43,6 +45,7 @@ namespace The_Game
         public bool Passable => false;
         public DrawingPriority Priority => DrawingPriority.SolidSurface;
         public RectangleF Hitbox { get; }
+        public string TextureDirectory => "Textures";
         public string Texture => "CrumbledWall.png";
         public string[] Textures => new[] { Texture };
 

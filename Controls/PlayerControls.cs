@@ -13,8 +13,7 @@ namespace The_Game.Controls
     public class PlayerControls
     {
         private readonly Player player;
-        private readonly HashSet<Keys> pressedKeys;
-        private readonly int dt;
+        private readonly HashSet<PlayerAction> playerActions;
 
         private const float gravAcceleration = 0.002f;
         private const float maxWalkingVelocity = 1.3f;
@@ -27,9 +26,9 @@ namespace The_Game.Controls
 
         public float GetNewHorGuidedVel()
         {
-            var aDown = pressedKeys.Contains(Keys.A);
-            var dDown = pressedKeys.Contains(Keys.D);
-            if (aDown && !dDown)
+            var isDrivenLeft = playerActions.Contains(PlayerAction.GoLeft);
+            var isDrivenRight = playerActions.Contains(PlayerAction.GoRight);
+            if (isDrivenLeft && !isDrivenRight)
             {
                 if (IsStill || IsGoingRight)
                 {
@@ -37,7 +36,7 @@ namespace The_Game.Controls
                     return -maxWalkingVelocity;
                 }
             }
-            else if (!aDown && dDown)
+            else if (!isDrivenLeft && isDrivenRight)
             {
                 if (IsStill || IsGoingLeft)
                 {
@@ -59,11 +58,11 @@ namespace The_Game.Controls
         {
             if (player.State == PlayerState.Jumping)
             {
-                var newPos = player.Pos + dt * player.Velocity;
-                player.VerticalVel += dt * gravAcceleration;
+                var newPos = player.Pos + 10 * player.Velocity;
+                player.VerticalVel += 10 * gravAcceleration;
                 return newPos;
             }
-            return player.Pos + dt * player.Velocity;
+            return player.Pos + 10 * player.Velocity;
         }
 
         public void ProcessCollisions()
@@ -81,8 +80,7 @@ namespace The_Game.Controls
         public PlayerControls(Player player)
         {
             this.player = player;
-            pressedKeys = player.Game.PressedKeys;
-            dt = player.Game.Dt;
+            playerActions = player.Game.PlayerActions;
         }
     }
 }

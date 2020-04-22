@@ -15,6 +15,7 @@ namespace The_Game
         bool Passable { get; }
         DrawingPriority Priority { get; }
         RectangleF Hitbox { get; }
+        string TextureDirectory { get; }
         string Texture { get; }
         string[] Textures { get; }
     }
