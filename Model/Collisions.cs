@@ -18,7 +18,7 @@ namespace The_Game.Model
                 { RectangleSide.Left,   new Point(-1, 0) }
             };
 
-        public static IEnumerable<IEntity> GetCollisions(ILevel level, IEntity ent)
+        public static IEnumerable<IEntity> GetCollisions(Level level, IEntity ent)
         {
             return level.Entities
                 .Where(otherEnt => AreColliding(ent, otherEnt));
@@ -45,7 +45,7 @@ namespace The_Game.Model
             return new Vector2(offsetDir.X * offset, offsetDir.Y * offset);
         }
 
-        public static bool IsStandingOnSurface(ILevel level, IEntity ent)
+        public static bool IsStandingOnSurface(Level level, IEntity ent)
         {
             var possibleGround = new RectangleF(
                 ent.Hitbox.Left, ent.Hitbox.Bottom + 1e-3f,

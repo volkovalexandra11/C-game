@@ -52,7 +52,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\PlayerControls.cs" />
+    <Compile Include="Cutscenes\StartCutscene.cs" />
+    <Compile Include="GraphicMethods.cs" />
+    <Compile Include="Interfaces\ICutscene.cs" />
+    <Compile Include="Interfaces\IGameplayStage.cs" />
     <Compile Include="Levels\DrawingPriority.cs" />
+    <Compile Include="Levels\TestLevel.cs" />
+    <Compile Include="Menu\GameMainMenu.cs" />
     <Compile Include="Model\Collisions.cs" />
     <Compile Include="Model\Entities.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
@@ -64,9 +70,11 @@
     <Compile Include="Model\GameState.cs" />
     <Compile Include="Controls\PlayerState.cs" />
     <Compile Include="Model\Player.cs" />
+    <Compile Include="Model\StageManager.cs" />
+    <Compile Include="PlayerActions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Levels\TestLevel.cs" />
+    <Compile Include="Levels\Level.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -93,6 +101,9 @@
     <Content Include="Textures\Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Textures\CastleCeremony.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Textures\CrumbledWall.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -103,6 +114,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Textures\KnightRight.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\MainMenu.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

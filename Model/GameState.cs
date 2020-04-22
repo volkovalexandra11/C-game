@@ -7,23 +7,44 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
 using System.Windows.Forms;
+using System.Windows.Input;
+using The_Game.Levels;
 
 namespace The_Game
 {
+    public enum PlayerAction
+    {
+        GoLeft,
+        GoRight,
+        GoUp,
+        GoDown,
+        Jump,
+        PickUp,
+        AttackMelee,
+        AttackRanged,
+        Debug
+    }
+
     public class GameState
     {
-        public int Dt { get; }
         public Player Player { get; }
-        public ILevel Level { get; set; }
-        public readonly HashSet<Keys> PressedKeys;
-
-        public GameState(int dt)
+        private Level level;
+        public Level Level
         {
-            Dt = dt;
-            PressedKeys = new HashSet<Keys>();
-            Player = new Player(this, new Vector2(400, 700));
-            Level = new TestLevel(Player, "Textures");
-            Player.Level = Level;
+            get => level;
+            set
+            {
+                level = value;
+                Player.Pos = level.StartPos;
+            }
+        }
+        public readonly HashSet<PlayerAction> PlayerActions;
+
+        public GameState()
+        {
+            PlayerActions = new HashSet<PlayerAction>();
+            Player = new Player(this);
+            Level = new Level(TestLevel.Entities, TestLevel.StartPos, Player);
         }
 
         public void UpdateModel()
@@ -32,14 +53,6 @@ namespace The_Game
             {
                 mob.Update();
             }
-        }
-
-        public void HandleKey(Keys e, bool down)
-        {
-            if (down)
-                PressedKeys.Add(e);
-            else if (PressedKeys.Contains(e))
-                PressedKeys.Remove(e);
         }
     }
 }

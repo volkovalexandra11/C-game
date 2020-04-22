@@ -7,15 +7,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Input;
+using The_Game.Cutscenes;
+using The_Game.Interfaces;
+using The_Game.Menu;
 
 namespace The_Game
 {
+    public enum GameplayStage
+    {
+        MainMenu,
+        Cutscene,
+        InGame,
+        InGameMenu
+    }
+
     [System.ComponentModel.DesignerCategory("")]
     public partial class GameForm : Form
     {
-        private GameState game { get; set; }
-        private readonly Timer timer;
+        public GameplayStage Stage { get; private set; }
+
+        private GameState Game { get; set; }
+        private ICutscene CurrentCutscene { get; set; }
+        private Timer Timer { get; set; }
+
+        public int TimerInterval { get; private set; }
         public Size InternalSize { get; }
+
+        private readonly HashSet<Keys> pressedKeys;
+        private readonly HashSet<MouseButtons> pressedButtons;
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -32,38 +52,167 @@ namespace The_Game
 
         private void DrawNormalizedForm(Graphics g)
         {
-            game.Level.Draw(g);
+            switch (Stage)
+            {
+                case GameplayStage.InGame:
+                    DrawLevel(g);
+                    break;
+                case GameplayStage.InGameMenu:
+                    //TODO
+                    break;
+                case GameplayStage.MainMenu:
+                    break;
+                case GameplayStage.Cutscene:
+                    DrawCutscene(g);
+                    break;
+            }
         }
 
-        public GameForm(GameState gs)
+        private void DrawCutscene(Graphics g)
+        {
+            g.FillRectangle(CurrentCutscene.BackgroundBrush,
+                new RectangleF(PointF.Empty, InternalSize));
+            g.DrawString(CurrentCutscene.CurrentLine, new Font("Arial", 30), Brushes.Black, new PointF(
+                InternalSize.Width / 10, InternalSize.Height / 6));
+        }
+
+        private void DrawLevel(Graphics g)
+        {
+            foreach (var entity in Game.Level.Entities)
+            {
+                var texture = Game.Level.Textures[entity][entity.Texture];
+                texture.TranslateTransform(entity.Hitbox.Left, entity.Hitbox.Top);
+                g.FillRectangle(texture, entity.Hitbox);
+                texture.ResetTransform();
+            }
+        }
+
+        public void StartNewGame()
+        {
+            if (Stage == GameplayStage.MainMenu)
+                MoveNextStage();
+            else
+                throw new InvalidOperationException("User isn't on the main menu");
+        }
+
+        public void StartGame(GameState gameState = null)
+        {
+            Game = gameState ?? new GameState();
+            Stage = GameplayStage.InGame;
+            Timer = new Timer() { Interval = TimerInterval };
+            Timer.Tick += OnTimerTick;
+            Timer.Start();
+        }
+
+        public void StartCutscene(ICutscene cutscene = null)
+        {
+            CurrentCutscene = cutscene ?? new StartCutscene(this);
+            Stage = GameplayStage.Cutscene;
+            Controls.Clear();
+            Timer = new Timer() { Interval = TimerInterval };
+            Timer.Tick += (_, __) => { Invalidate(); };
+            Timer.Start();
+        }
+
+        private void MoveNextStage()
+        {
+            switch (Stage)
+            {
+                case GameplayStage.Cutscene:
+                    CurrentCutscene = null;
+                    StartGame();
+                    break;
+                case GameplayStage.MainMenu:
+                    StartCutscene();
+                    break;
+            }
+        }
+
+        public GameForm(int timerInterval)
         {
             ClientSize = new Size(1260, 700);
-            game = gs;
+            SizeChanged += (sender, args) => Invalidate();
             DoubleBuffered = true;
+            SetStyle(ControlStyles.SupportsTransparentBackColor, true);  // performance?
             BackColor = Color.Black;
+            TimerInterval = timerInterval;
             InternalSize = new Size(1800, 1000);
-            SizeChanged += (sender, args) => { Invalidate(); };
-            timer = new Timer() { Interval = gs.Dt };
-            timer.Tick += OnTimerTick;
-            timer.Start();
+            pressedKeys = new HashSet<Keys>();
+            pressedButtons = new HashSet<MouseButtons>();
+            Stage = GameplayStage.MainMenu;
+            GameMainMenu.Initialize(this);
         }
+
+        public bool IsPressed(Keys key) => pressedKeys.Contains(key);
 
         protected void OnTimerTick(object sender, EventArgs args)
         {
-            game.UpdateModel();
+            Game.UpdateModel();
             Invalidate();
+        }
+
+        private void HandleKey(Keys key, bool down)
+        {
+            PlayerAction keyAction;
+            if (down)
+            {
+                pressedKeys.Add(key);
+                if (Game != null && PlayerActions.ActionByKey.TryGetValue(key, out keyAction))
+                    Game.PlayerActions.Add(keyAction);
+            }
+            else
+            {
+                pressedKeys.Remove(key);
+                if (Game != null && PlayerActions.ActionByKey.TryGetValue(key, out keyAction))
+                    Game.PlayerActions.Remove(keyAction);
+            }
+        }
+
+        private void HandleButton(MouseButtons button, bool down)
+        {
+            PlayerAction buttonAction;
+            if (down)
+            {
+                pressedButtons.Add(button);
+                if (Game != null && PlayerActions.ActionByButton.TryGetValue(button, out buttonAction))
+                    Game.PlayerActions.Add(buttonAction);
+            }
+            else
+            {
+                pressedButtons.Remove(button);
+                if (Game != null && PlayerActions.ActionByButton.TryGetValue(button, out buttonAction))
+                    Game.PlayerActions.Remove(buttonAction);
+            }
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
         {
             base.OnKeyDown(e);
-            game.HandleKey(e.KeyCode, false);
+            HandleKey(e.KeyCode, false);
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
-            game.HandleKey(e.KeyCode, true);
+            HandleKey(e.KeyCode, true);
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+            HandleButton(e.Button, false);
+
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+            HandleButton(e.Button, false);
+            if (Stage == GameplayStage.Cutscene)
+            {
+                if (!CurrentCutscene.MoveNextLine())
+                    MoveNextStage();
+            }
         }
     }
 }
