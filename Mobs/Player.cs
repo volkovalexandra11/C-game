@@ -38,7 +38,7 @@ namespace The_Game.Mobs
 
         protected override void ProcessCollision(IEntity otherEnt)
         {
-            if (otherEnt is ITrigger triggerEnt)
+            if (otherEnt is ITrigger triggerEnt && triggerEnt.Active)
                 triggerEnt.Trigger();
         }
     }

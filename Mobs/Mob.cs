@@ -120,7 +120,7 @@ namespace The_Game.Mobs
             UpdatePosition();
             ProcessCollisions();
             if (Game.PlayerActions.Contains(MobAction.Debug))
-            { var a = "Dedug!"; };
+            { Game.PlayerActions.Remove(MobAction.Debug); };
         }
 
         private void ProcessActions()

@@ -87,25 +87,9 @@ namespace The_Game
             LevelShown = new LevelPanel(Game.Level);
             CurrentPanel = LevelShown;
             Stage = GameplayStage.InGame;
-            Timer = new Timer() { Interval = TimerInterval };
             Timer.Tick += OnTimerTick;
             Timer.Start();
         }
-
-        //private void FillPlayerActions()
-        //{
-        //    PlayerAction action;
-        //    foreach (var pressedKey in pressedKeys)
-        //    {
-        //        if (PlayerActions.ActionByKey.TryGetValue(pressedKey, out action))
-        //            Game.PlayerActions.Add(action);
-        //    }
-        //    foreach (var pressedButton in pressedButtons)
-        //    {
-        //        if (PlayerActions.ActionByButton.TryGetValue(pressedButton, out action))
-        //            Game.PlayerActions.Add(action);
-        //    }
-        //}
 
         public void StartCutscene(Cutscene cutscene)
         {
@@ -113,9 +97,6 @@ namespace The_Game
             CurrentPanel = CutsceneShown;
             Stage = GameplayStage.Cutscene;
             while (Controls.Count > 0) Controls[0].Dispose();
-            Timer.Interval = TimerInterval;
-            Timer.Tick += (_, __) => { Invalidate(); };
-            Timer.Start();
         }
 
         public GameForm(int timerInterval)
@@ -133,11 +114,11 @@ namespace The_Game
             CurrentPanel = GameMainMenu;
             Controls.Add(CurrentPanel);
 
-            Timer = new Timer();
-
             pressedKeys = new HashSet<Keys>();
             pressedButtons = new HashSet<MouseButtons>();
             Stage = GameplayStage.MainMenu;
+
+            Timer = new Timer() { Interval = TimerInterval };
         }
 
         protected override void OnResize(EventArgs e)
@@ -153,7 +134,7 @@ namespace The_Game
             if (Game.CurrentCutscene != Cutscene.None)
             {
                 if (CutsceneShown == null || CutsceneShown.PanelCutscene != Game.CurrentCutscene)
-                    StartCutscene(Game.CurrentCutscene);
+                        StartCutscene(Game.CurrentCutscene);
             }
             else
                 Game.UpdateModel();
@@ -193,6 +174,7 @@ namespace The_Game
             {
                 if (!CutsceneShown.MoveNextLine())
                 {
+                    CutsceneShown = null;
                     CurrentPanel = LevelShown;
                     Stage = GameplayStage.InGame;
                     Game.EndCutscene();
