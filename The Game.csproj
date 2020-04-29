@@ -72,7 +72,6 @@
     <Compile Include="Game Panels\LevelPanel.cs" />
     <Compile Include="Game Panels\MainMenuPanel.cs" />
     <Compile Include="Game Panels\PictureButton.cs" />
-    <Compile Include="GraphicMethods.cs" />
     <Compile Include="Interfaces\ICutscene.cs" />
     <Compile Include="Levels\DrawingPriority.cs" />
     <Compile Include="Levels\TestLevelBuilder.cs" />

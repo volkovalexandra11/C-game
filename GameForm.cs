@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -84,6 +85,7 @@ namespace The_Game
         public void StartGame(GameState gameState = null)
         {
             Game = gameState ?? new GameState();
+            Game.LevelChanged += ChangeLevelPanel;
             LevelShown = new LevelPanel(Game.Level);
             CurrentPanel = LevelShown;
             Stage = GameplayStage.InGame;
@@ -119,6 +121,12 @@ namespace The_Game
             Stage = GameplayStage.MainMenu;
 
             Timer = new Timer() { Interval = TimerInterval };
+        }
+
+        private void ChangeLevelPanel()
+        {
+            LevelShown = new LevelPanel(Game.Level);
+            CurrentPanel = LevelShown;
         }
 
         protected override void OnResize(EventArgs e)

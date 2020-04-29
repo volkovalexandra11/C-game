@@ -28,6 +28,7 @@ namespace The_Game.Model
                 level = value;
                 GamePlayer.MobLevel = value;
                 GamePlayer.Pos = level.StartPos;
+                if (LevelChanged != null) LevelChanged();
             }
         }
         public readonly HashSet<MobAction> PlayerActions;
@@ -44,6 +45,8 @@ namespace The_Game.Model
                 currentCutscene = value;
             }
         }
+
+        public event Action LevelChanged;
 
         public GameState(Player player = null)
         {
