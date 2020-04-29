@@ -7,17 +7,16 @@ using System.Threading.Tasks;
 using The_Game.Levels;
 using System.Drawing;
 
-namespace The_Game
+namespace The_Game.Interfaces
 {
-
     public interface IEntity
     {
         bool Passable { get; }
         DrawingPriority Priority { get; }
         RectangleF Hitbox { get; }
-        string TextureDirectory { get; }
-        string Texture { get; }
         string[] Textures { get; }
+        
+        string GetTexture();
     }
 
     public interface IMob : IEntity

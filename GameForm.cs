@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 using The_Game.Cutscenes;
+using The_Game.Game_Panels;
 using The_Game.Interfaces;
-using The_Game.Menu;
+using The_Game.Model;
 
 namespace The_Game
 {
@@ -25,17 +26,42 @@ namespace The_Game
     [System.ComponentModel.DesignerCategory("")]
     public partial class GameForm : Form
     {
-        public GameplayStage Stage { get; private set; }
+        private GamePanel CurrentPanel { get; set; }
+
+        private MainMenuPanel GameMainMenu { get; set; }
+        private CutscenePanel CutsceneShown { get; set; }
+        private LevelPanel LevelShown { get; set; }
+
+
+        private GameplayStage Stage { get; set; }
 
         private GameState Game { get; set; }
-        private ICutscene CurrentCutscene { get; set; }
         private Timer Timer { get; set; }
 
-        public int TimerInterval { get; private set; }
+        private int TimerInterval { get; set; }
         public Size InternalSize { get; }
 
         private readonly HashSet<Keys> pressedKeys;
         private readonly HashSet<MouseButtons> pressedButtons;
+
+        public Rectangle GetWorkingSpace()
+        {
+            var horizontalScalar = ClientSize.Width / (float)InternalSize.Width;
+            var verticalScalar = ClientSize.Height / (float)InternalSize.Height;
+            if (verticalScalar < horizontalScalar)
+            {
+                var spaceWidth = (int)(InternalSize.Width * verticalScalar);
+                return new Rectangle(
+                    new Point((ClientSize.Width - spaceWidth) / 2, 0),
+                    new Size(spaceWidth, ClientSize.Height)
+                );
+            }
+            var spaceHeight = (int)(InternalSize.Height * horizontalScalar);
+            return new Rectangle(
+                new Point(0, (ClientSize.Height - spaceHeight) / 2),
+                new Size(ClientSize.Width, spaceHeight)
+            );
+        }
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -44,104 +70,52 @@ namespace The_Game
             var minScalar = Math.Min(horizontalScalar, verticalScalar);
             e.Graphics.ScaleTransform(minScalar, minScalar);
             if (verticalScalar <= horizontalScalar)
-                e.Graphics.TranslateTransform((ClientSize.Width/verticalScalar - InternalSize.Width)/2, 0);
+                e.Graphics.TranslateTransform((ClientSize.Width/verticalScalar - InternalSize.Width) / 2, 0);
             else
-                e.Graphics.TranslateTransform(0, (ClientSize.Height/horizontalScalar - InternalSize.Height)/2);
+                e.Graphics.TranslateTransform(0, (ClientSize.Height/horizontalScalar - InternalSize.Height) / 2);
             DrawNormalizedForm(e.Graphics);
         }
 
         private void DrawNormalizedForm(Graphics g)
         {
-            switch (Stage)
-            {
-                case GameplayStage.InGame:
-                    DrawLevel(g);
-                    break;
-                case GameplayStage.InGameMenu:
-                    //TODO
-                    break;
-                case GameplayStage.MainMenu:
-                    break;
-                case GameplayStage.Cutscene:
-                    DrawCutscene(g);
-                    break;
-            }
-        }
-
-        private void DrawCutscene(Graphics g)
-        {
-            g.FillRectangle(CurrentCutscene.BackgroundBrush,
-                new RectangleF(PointF.Empty, InternalSize));
-            g.DrawString(CurrentCutscene.CurrentLine, new Font("Arial", 30), Brushes.Black, new PointF(
-                InternalSize.Width / 10, InternalSize.Height / 6));
-        }
-
-        private void DrawLevel(Graphics g)
-        {
-            foreach (var entity in Game.Level.Entities)
-            {
-                var texture = Game.Level.Textures[entity][entity.Texture];
-                texture.TranslateTransform(entity.Hitbox.Left, entity.Hitbox.Top);
-                g.FillRectangle(texture, entity.Hitbox);
-                texture.ResetTransform();
-            }
-        }
-
-        public void StartNewGame()
-        {
-            if (Stage == GameplayStage.MainMenu)
-                MoveNextStage();
-            else
-                throw new InvalidOperationException("User isn't on the main menu");
+            CurrentPanel.Draw(g);
         }
 
         public void StartGame(GameState gameState = null)
         {
             Game = gameState ?? new GameState();
-            FillPlayerActions();
+            LevelShown = new LevelPanel(Game.Level);
+            CurrentPanel = LevelShown;
             Stage = GameplayStage.InGame;
             Timer = new Timer() { Interval = TimerInterval };
             Timer.Tick += OnTimerTick;
             Timer.Start();
         }
 
-        private void FillPlayerActions()
-        {
-            PlayerAction action;
-            foreach (var pressedKey in pressedKeys)
-            {
-                if (PlayerActions.ActionByKey.TryGetValue(pressedKey, out action))
-                    Game.PlayerActions.Add(action);
-            }
-            foreach (var pressedButton in pressedButtons)
-            {
-                if (PlayerActions.ActionByButton.TryGetValue(pressedButton, out action))
-                    Game.PlayerActions.Add(action);
-            }
-        }
+        //private void FillPlayerActions()
+        //{
+        //    PlayerAction action;
+        //    foreach (var pressedKey in pressedKeys)
+        //    {
+        //        if (PlayerActions.ActionByKey.TryGetValue(pressedKey, out action))
+        //            Game.PlayerActions.Add(action);
+        //    }
+        //    foreach (var pressedButton in pressedButtons)
+        //    {
+        //        if (PlayerActions.ActionByButton.TryGetValue(pressedButton, out action))
+        //            Game.PlayerActions.Add(action);
+        //    }
+        //}
 
-        public void StartCutscene(ICutscene cutscene = null)
+        public void StartCutscene(Cutscene cutscene)
         {
-            CurrentCutscene = cutscene ?? new StartCutscene(this);
+            CutsceneShown = CutsceneFactory.BuildCutscene(this, cutscene);
+            CurrentPanel = CutsceneShown;
             Stage = GameplayStage.Cutscene;
             while (Controls.Count > 0) Controls[0].Dispose();
-            Timer = new Timer() { Interval = TimerInterval };
+            Timer.Interval = TimerInterval;
             Timer.Tick += (_, __) => { Invalidate(); };
             Timer.Start();
-        }
-
-        private void MoveNextStage()
-        {
-            switch (Stage)
-            {
-                case GameplayStage.Cutscene:
-                    CurrentCutscene = null;
-                    StartGame();
-                    break;
-                case GameplayStage.MainMenu:
-                    StartCutscene();
-                    break;
-            }
         }
 
         public GameForm(int timerInterval)
@@ -149,88 +123,85 @@ namespace The_Game
             ClientSize = new Size(1260, 700);
             InternalSize = new Size(1800, 1000);
 
-            SizeChanged += (sender, args) => Invalidate();
             DoubleBuffered = true;
-            SetStyle(ControlStyles.SupportsTransparentBackColor, true);  // performance?
             BackColor = Color.Black;
 
             TimerInterval = timerInterval;
+            KeyPreview = true;
+
+            GameMainMenu = new MainMenuPanel(this);
+            CurrentPanel = GameMainMenu;
+            Controls.Add(CurrentPanel);
+
+            Timer = new Timer();
 
             pressedKeys = new HashSet<Keys>();
             pressedButtons = new HashSet<MouseButtons>();
             Stage = GameplayStage.MainMenu;
-            GameMainMenu.Initialize(this);
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            Invalidate();
         }
 
         public bool IsPressed(Keys key) => pressedKeys.Contains(key);
 
         protected void OnTimerTick(object sender, EventArgs args)
         {
-            Game.UpdateModel();
+            if (Game.CurrentCutscene != Cutscene.None)
+            {
+                if (CutsceneShown == null || CutsceneShown.PanelCutscene != Game.CurrentCutscene)
+                    StartCutscene(Game.CurrentCutscene);
+            }
+            else
+                Game.UpdateModel();
             Invalidate();
-        }
-
-        private void HandleKey(Keys key, bool down)
-        {
-            PlayerAction keyAction;
-            if (down)
-            {
-                pressedKeys.Add(key);
-                if (Game != null && PlayerActions.ActionByKey.TryGetValue(key, out keyAction))
-                    Game.PlayerActions.Add(keyAction);
-            }
-            else
-            {
-                pressedKeys.Remove(key);
-                if (Game != null && PlayerActions.ActionByKey.TryGetValue(key, out keyAction))
-                    Game.PlayerActions.Remove(keyAction);
-            }
-        }
-
-        private void HandleButton(MouseButtons button, bool down)
-        {
-            PlayerAction buttonAction;
-            if (down)
-            {
-                pressedButtons.Add(button);
-                if (Game != null && PlayerActions.ActionByButton.TryGetValue(button, out buttonAction))
-                    Game.PlayerActions.Add(buttonAction);
-            }
-            else
-            {
-                pressedButtons.Remove(button);
-                if (Game != null && PlayerActions.ActionByButton.TryGetValue(button, out buttonAction))
-                    Game.PlayerActions.Remove(buttonAction);
-            }
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
         {
             base.OnKeyDown(e);
-            HandleKey(e.KeyCode, false);
+            pressedKeys.Remove(e.KeyCode);
+            if (Game != null && MobActions.ActionByKey.TryGetValue(e.KeyCode, out var keyAction))
+                Game.PlayerActions.Remove(keyAction);
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
-            HandleKey(e.KeyCode, true);
+            pressedKeys.Add(e.KeyCode);
+            if (Game != null && MobActions.ActionByKey.TryGetValue(e.KeyCode, out var keyAction))
+                Game.PlayerActions.Add(keyAction);
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            HandleButton(e.Button, false);
+            pressedButtons.Remove(e.Button);
+            if (Game != null && MobActions.ActionByButton.TryGetValue(e.Button, out var buttonAction))
+                Game.PlayerActions.Add(buttonAction);
 
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            HandleButton(e.Button, false);
+            pressedButtons.Add(e.Button);
             if (Stage == GameplayStage.Cutscene)
             {
-                if (!CurrentCutscene.MoveNextLine())
-                    MoveNextStage();
+                if (!CutsceneShown.MoveNextLine())
+                {
+                    CurrentPanel = LevelShown;
+                    Stage = GameplayStage.InGame;
+                    Game.EndCutscene();
+                }
+            }
+            else
+            {
+                if (Game != null && MobActions.ActionByButton.TryGetValue(e.Button, out var buttonAction))
+                    Game.PlayerActions.Add(buttonAction);
             }
         }
     }
