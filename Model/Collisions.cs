@@ -5,6 +5,8 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using The_Game.Interfaces;
+using The_Game.Levels;
 
 namespace The_Game.Model
 {

@@ -9,25 +9,15 @@ using System.Numerics;
 using System.Windows.Forms;
 using System.Windows.Input;
 using The_Game.Levels;
+using The_Game.Cutscenes;
+using The_Game.Model;
+using The_Game.Mobs;
 
-namespace The_Game
+namespace The_Game.Model
 {
-    public enum PlayerAction
-    {
-        GoLeft,
-        GoRight,
-        GoUp,
-        GoDown,
-        Jump,
-        PickUp,
-        AttackMelee,
-        AttackRanged,
-        Debug
-    }
-
     public class GameState
     {
-        public Player Player { get; }
+        public Player GamePlayer { get; }
         private Level level;
         public Level Level
         {
@@ -35,20 +25,47 @@ namespace The_Game
             set
             {
                 level = value;
-                Player.Pos = level.StartPos;
+                GamePlayer.MobLevel = value;
+                GamePlayer.Pos = level.StartPos;
             }
         }
-        public readonly HashSet<PlayerAction> PlayerActions;
+        public readonly HashSet<MobAction> PlayerActions;
 
-        public GameState()
+        public bool IsPaused { get; private set; }
+
+        private Cutscene currentCutscene;
+        public Cutscene CurrentCutscene
         {
-            PlayerActions = new HashSet<PlayerAction>();
-            Player = new Player(this);
-            Level = new Level(TestLevel.Entities, TestLevel.StartPos, Player);
+            get => currentCutscene;
+            private set
+            {
+                IsPaused = value != Cutscene.None;
+                currentCutscene = value;
+            }
+        }
+
+        public GameState(Player player = null)
+        {
+            PlayerActions = new HashSet<MobAction>();
+            GamePlayer = player ?? new Player(this);
+            Level = new Level(this, new TestLevelBuilder().BuildData(this), GamePlayer);
+            ShowCutscene(Cutscene.StartCutscene);
+        }
+
+        public void ShowCutscene(Cutscene cutscene)
+        {
+            CurrentCutscene = cutscene;
+        }
+
+        public void EndCutscene()
+        {
+            CurrentCutscene = Cutscene.None;
         }
 
         public void UpdateModel()
         {
+            if (IsPaused)
+                throw new InvalidOperationException("GameState is paused! Cannot update!");
             foreach (var mob in Level.Mobs)
             {
                 mob.Update();

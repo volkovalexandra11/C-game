@@ -10,11 +10,16 @@ using System.Numerics;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using System.Threading.Tasks;
+using The_Game.Interfaces;
+using The_Game.Mobs;
+using The_Game.Model;
 
-namespace The_Game
+namespace The_Game.Levels
 {
-    public class Level //: ILevel
+    public class Level
     {
+        public GameState Game { get; }
+
         public Size LevelSize { get; }
 
         public List<IEntity> Entities { get; }
@@ -23,74 +28,13 @@ namespace The_Game
 
         public Vector2 StartPos { get; }
 
-        public readonly Dictionary<IEntity, Dictionary<string, TextureBrush>> Textures;
-
-        public Level(ReadOnlyCollection<IEntity> entities, Vector2 startPos, Player player)
+        public Level(GameState game, LevelData data, Player player)
         {
             LevelSize = new Size(1800, 1000);
-            StartPos = startPos;
-            Entities = entities.Append(player).OrderBy(ent => ent.Priority).ToList();
+            Game = game;
+            StartPos = data.StartPos;
+            Entities = data.Entities.Append(player).OrderBy(ent => ent.Priority).ToList();
             Mobs = Entities.Where(ent => ent is IMob).Select(mob => (IMob)mob).ToList();
-            Textures = Entities
-                .ToDictionary(
-                    ent => ent,
-                    ent => ent.Textures
-                        .ToDictionary(
-                            textureName => textureName,
-                            textureName => GraphicMethods.GetTextureBrush(
-                                Path.Combine(ent.TextureDirectory, textureName),
-                                Size.Round(ent.Hitbox.Size)
-                            )
-                        )
-                );
         }
     }
-
-    //class TestLevel : ILevel
-    //{
-    //    public Size LevelSize { get; }
-    //    public List<IEntity> Entities { get; }
-    //    public List<IMob> Mobs { get; }
-    //    public Vector2 StartPos => new Vector2(400, 700);
-    //    private readonly Dictionary<IEntity, Dictionary<string, TextureBrush>> textures;
-
-    //    public TestLevel(Player player)
-    //    {
-    //        LevelSize = new Size(1800, 1000);
-    //        Entities = new List<IEntity>
-    //        {
-    //            player,
-    //            new Background(LevelSize),
-    //            new Ground(new Size(1800, 300), new Point(0, 700)),
-    //            new CrumbledWall(new Size(150, 400), new Point(100, 300 + 10)),
-    //            new CrumbledWall(new Size(200, 250), new Point(1500, 450 + 10)),
-    //            new CrumbledWall(new Size(900, 50), new Point(700, 400 + 10))
-    //        };
-    //        Entities = Entities.OrderBy(ent => ent.Priority).ToList();
-    //        Mobs = Entities.Where(ent => ent is IMob).Select(mob => (IMob)mob).ToList();
-    //        textures = Entities
-    //            .ToDictionary(
-    //                ent => ent,
-    //                ent => ent.Textures
-    //                    .ToDictionary(
-    //                        textureName => textureName,
-    //                        textureName => GraphicMethods.GetTextureBrush(
-    //                            Path.Combine(ent.TextureDirectory, textureName),
-    //                            Size.Round(ent.Hitbox.Size)
-    //                        )
-    //                    )
-    //            );
-    //    }
-
-    //    public void Draw(Graphics g)
-    //    {
-    //        foreach (var entity in Entities)
-    //        {
-    //            var texture = textures[entity][entity.Texture];
-    //            texture.TranslateTransform(entity.Hitbox.Left, entity.Hitbox.Top);
-    //            g.FillRectangle(texture, entity.Hitbox);
-    //            texture.ResetTransform();
-    //        }
-    //    }
-    //}
 }

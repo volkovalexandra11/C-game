@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace The_Game.Interfaces
+namespace The_Game.Mobs
 {
-    interface IGameplayStage
+    public enum Direction
     {
-        void EnterStage(GameForm form);
+        Left,
+        Right
     }
 }

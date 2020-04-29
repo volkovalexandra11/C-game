@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace The_Game
+namespace The_Game.Mobs
 {
-    public enum PlayerState
+    public enum MobState
     {
         Walking,
         Jumping,
