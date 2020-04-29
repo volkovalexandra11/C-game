@@ -12,6 +12,7 @@ using The_Game.Levels;
 using The_Game.Cutscenes;
 using The_Game.Model;
 using The_Game.Mobs;
+using The_Game.Interfaces;
 
 namespace The_Game.Model
 {
@@ -48,9 +49,16 @@ namespace The_Game.Model
         {
             PlayerActions = new HashSet<MobAction>();
             GamePlayer = player ?? new Player(this);
-            Level = new Level(this, new TestLevelBuilder().BuildData(this), GamePlayer);
+            ChangeLevel(new TestLevelBuilder());
             ShowCutscene(Cutscene.StartCutscene);
         }
+
+        public void ChangeLevel(ILevelBuilder nextLevel)
+        {
+            var newLevel = new Level(this, nextLevel.BuildData(this), GamePlayer);
+            Level = newLevel;
+        }
+
 
         public void ShowCutscene(Cutscene cutscene)
         {
