@@ -82,25 +82,6 @@ namespace The_Game
             CurrentPanel.Draw(g);
         }
 
-        public void StartGame(GameState gameState = null)
-        {
-            Game = gameState ?? new GameState();
-            Game.LevelChanged += ChangeLevelPanel;
-            LevelShown = new LevelPanel(Game.Level);
-            CurrentPanel = LevelShown;
-            Stage = GameplayStage.InGame;
-            Timer.Tick += OnTimerTick;
-            Timer.Start();
-        }
-
-        public void StartCutscene(Cutscene cutscene)
-        {
-            CutsceneShown = CutsceneFactory.BuildCutscene(this, cutscene);
-            CurrentPanel = CutsceneShown;
-            Stage = GameplayStage.Cutscene;
-            while (Controls.Count > 0) Controls[0].Dispose();
-        }
-
         public GameForm(int timerInterval)
         {
             ClientSize = new Size(1260, 700);
@@ -121,6 +102,33 @@ namespace The_Game
             Stage = GameplayStage.MainMenu;
 
             Timer = new Timer() { Interval = TimerInterval };
+        }
+
+        public void StartGame(GameState gameState = null)
+        {
+            Game = gameState ?? new GameState();
+            Game.LevelChanged += ChangeLevelPanel;
+            LevelShown = new LevelPanel(Game.Level);
+            CurrentPanel = LevelShown;
+            Stage = GameplayStage.InGame;
+            Timer.Tick += OnTimerTick;
+            Timer.Start();
+        }
+
+        public void StartCutscene(Cutscene cutscene)
+        {
+            CutsceneShown = CutsceneFactory.BuildCutscene(this, cutscene);
+            CurrentPanel = CutsceneShown;
+            Stage = GameplayStage.Cutscene;
+            while (Controls.Count > 0) Controls[0].Dispose();
+        }
+
+        public void EndCutscene()
+        {
+            CutsceneShown = null;
+            CurrentPanel = LevelShown;
+            Stage = GameplayStage.InGame;
+            Game.EndCutscene();
         }
 
         private void ChangeLevelPanel()
@@ -182,10 +190,7 @@ namespace The_Game
             {
                 if (!CutsceneShown.MoveNextLine())
                 {
-                    CutsceneShown = null;
-                    CurrentPanel = LevelShown;
-                    Stage = GameplayStage.InGame;
-                    Game.EndCutscene();
+                    EndCutscene();
                 }
             }
             else
