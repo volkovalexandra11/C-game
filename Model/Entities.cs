@@ -49,12 +49,12 @@ namespace The_Game.Model
 
         public override bool Equals(object obj)
         {
-            if (obj.GetType() != GetType())
+            if (obj != null && obj.GetType() != GetType())
                 return false;
             if (ReferenceEquals(obj, this))
                 return true;
             var second = obj as CrumbledWall;
-            return second.Hitbox.Size == Hitbox.Size && second.Hitbox.X == Hitbox.X && second.Hitbox.Y == Hitbox.Y;
+            return second.Hitbox == Hitbox;
         }
 
         public override int GetHashCode() => base.GetHashCode();
@@ -88,7 +88,7 @@ namespace The_Game.Model
 
         public override bool Equals(object obj)
         {
-            if (obj.GetType() != GetType())
+            if (obj != null && obj.GetType() != GetType())
                 return false;
             if (ReferenceEquals(obj, this))
                 return true;
@@ -98,5 +98,24 @@ namespace The_Game.Model
 
         public override int GetHashCode() => base.GetHashCode();
         
+    }
+
+    public class Ladder : IEntity
+    {
+        public bool Passable => false;
+
+        public DrawingPriority Priority => DrawingPriority.SolidSurface;
+
+        public RectangleF Hitbox { get; }
+
+        public string[] Textures => new []{GetTexture()};
+
+        public string GetTexture() => "Ladder.png";
+
+        public Ladder(Size size, PointF pos)
+        {
+            Hitbox = new RectangleF(pos, size);
+        } 
+
     }
 }

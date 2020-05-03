@@ -21,7 +21,7 @@ namespace The_Game
     {
         private GamePanel CurrentPanel { get; set; }
 
-        private MainMenuPanel GameMainMenu { get; set; }
+        private MainMenuPanel GameMainMenu { get; }
         private CutscenePanel CutsceneShown { get; set; }
         private LevelPanel LevelShown { get; set; }
 
@@ -29,9 +29,9 @@ namespace The_Game
         private GameplayStage Stage { get; set; }
 
         private GameState Game { get; set; }
-        private Timer Timer { get; set; }
+        private Timer Timer { get; }
 
-        private int TimerInterval { get; set; }
+        private int TimerInterval { get; }
         public Size InternalSize { get; }
 
         private readonly HashSet<Keys> pressedKeys;
@@ -112,7 +112,7 @@ namespace The_Game
             pressedButtons = new HashSet<MouseButtons>();
             Stage = GameplayStage.MainMenu;
 
-            Timer = new Timer() { Interval = TimerInterval };
+            Timer = new Timer { Interval = TimerInterval };
         }
 
         private void ChangeLevelPanel()

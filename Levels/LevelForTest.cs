@@ -6,7 +6,7 @@ using The_Game.Model;
 
 namespace The_Game.Levels
 {
-    class LevelForTests : ILevelBuilder
+    class Level12ForTests : ILevelBuilder
     {
         public LevelData BuildData(GameState game)
         {
@@ -20,7 +20,7 @@ namespace The_Game.Levels
                     new Background(size),
                     new Ground(new Size(1800, 300), new Point(0, 700)),
                     new CrumbledWall(new Size(150, 400), new Point(100, 300 + 10)),
-                    //new Stump(game, new Size(100, 80), new Point(650, 620 + 10))
+                    new Ladder(new Size(100, 80), new Point(650, 620 + 10))
                 }.AsReadOnly()
             );
         }
