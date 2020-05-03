@@ -148,6 +148,7 @@
     <Content Include="Textures\KnightRight.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Textures\Ladder.png" />
     <Content Include="Textures\MainMenu.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

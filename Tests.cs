@@ -34,8 +34,8 @@ namespace The_Game
         [Test]
         public void TestJumping()
         {
-            player.Update();
             Gs.PlayerActions.Add(MobAction.Jump);
+            player.Update();
             Assert.AreEqual(initialPosition.X, player.Pos.X, 1e-7);
         }
         
@@ -43,7 +43,7 @@ namespace The_Game
         public void SetUp()
         {
             player = new Player(Gs);
-            var level = new LevelForTests();
+            var level = new Level12ForTests();
             Gs.ChangeLevel(level);
             Gs.PlayerActions.Clear();
             initialPosition = player.Pos;
@@ -52,7 +52,7 @@ namespace The_Game
         [Test]
         public void GameStateLevelTest()
         {
-            var levelType = new LevelForTests().GetType().ToString();
+            var levelType = "Level 12 For Tests";
             var thisType = Gs.Level.LevelName;
             Assert.True(thisType == levelType);
         }
