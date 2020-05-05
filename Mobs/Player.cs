@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using The_Game.Interfaces;
 using The_Game.Levels;
+using The_Game.MobAI;
 using The_Game.Mobs;
 using The_Game.Model;
 
@@ -29,6 +31,12 @@ namespace The_Game.Mobs
             MobLevel = newLevel;
         }
 
+        public override void Update()
+        {
+            FindPathsToPlayer();
+            base.Update();
+        }
+
         public Player(GameState game)
             : base
             (
@@ -38,6 +46,23 @@ namespace The_Game.Mobs
         {
             State = MobState.Walking;
             Dir = Direction.Right;
+        }
+
+        private void FindPathsToPlayer()
+        {
+            foreach (var pathToPlayer in DijkstraPathFinder.FindPaths(
+                GetClosestWaypoint(), MobLevel.WPReverseGraph, GetAIControlledMobData()
+            ))
+            {
+                pathToPlayer.Mob.PlannedPath = pathToPlayer;
+            }
+        }
+
+        private IEnumerable<Tuple<Vector2, Mob>> GetAIControlledMobData()
+        {
+            return MobLevel.Mobs
+                .Where(mob => !(mob is Player))
+                .Select(mob => Tuple.Create(mob.GetClosestWaypoint(), mob));
         }
 
         protected override void ProcessCollision(IEntity otherEnt)

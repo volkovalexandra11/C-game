@@ -52,7 +52,7 @@ namespace The_Game.Levels
                 new Vector2(50, 300),
                 entities,
                 waypoints,
-                LevelData.GetGraph(adjacencyLists)
+                LevelData.GetReverseGraph(adjacencyLists)
             );
         }
     }

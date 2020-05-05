@@ -46,7 +46,7 @@ namespace The_Game.Game_Panels
             menuTable.BackgroundImage = TextureLoader.LoadImage("MainMenu.png");
             menuTable.BackgroundImageLayout = ImageLayout.Stretch;
 
-            menuTable.CellBorderStyle = TableLayoutPanelCellBorderStyle.InsetDouble;
+            //menuTable.CellBorderStyle = TableLayoutPanelCellBorderStyle.InsetDouble;
         }
 
         protected override void OnResize(EventArgs eventargs)

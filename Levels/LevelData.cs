@@ -16,7 +16,7 @@ namespace The_Game.Levels
         public Vector2 StartPos { get; }
         public ReadOnlyCollection<IEntity> Entities { get; }
         public Vector2[] Waypoints { get; }
-        public Dictionary<Vector2, Dictionary<Vector2, float>> WPGraph { get; }
+        public Dictionary<Vector2, Dictionary<Vector2, float>> WPRevGraph { get; }
 
         public LevelData(
             Size size, Vector2 startPos, ReadOnlyCollection<IEntity> entities
@@ -34,7 +34,26 @@ namespace The_Game.Levels
             : this(size, startPos, entities)
         { 
             Waypoints = waypoints;
-            WPGraph = wpDists;
+            WPRevGraph = wpDists;
+        }
+
+        public static Dictionary<Vector2, Dictionary<Vector2, float>> GetReverseGraph(
+            Vector2[][] adjacencyLists
+        )
+        {
+            var edges = adjacencyLists
+                .SelectMany(list => list
+                    .Skip(1)
+                    .Select(neighbour => Tuple.Create(neighbour, list[0]))
+                );
+            var reverseGraph = new Dictionary<Vector2, Dictionary<Vector2, float>>();
+            foreach (var edge in edges)
+            {
+                if (!reverseGraph.ContainsKey(edge.Item1))
+                    reverseGraph[edge.Item1] = new Dictionary<Vector2, float>();
+                reverseGraph[edge.Item1][edge.Item2] = Vector2.Distance(edge.Item1, edge.Item2);
+            }
+            return reverseGraph;
         }
 
         public static Dictionary<Vector2, Dictionary<Vector2, float>> GetGraph(
