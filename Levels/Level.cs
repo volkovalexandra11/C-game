@@ -28,12 +28,19 @@ namespace The_Game.Levels
 
         public Vector2 StartPos { get; }
 
-        public Level(GameState game, LevelData data, Player player)
+        public Vector2[] Waypoints { get; }
+
+        public Dictionary<Vector2, Dictionary<Vector2, float>> WPGraph { get; }
+
+        public Level(GameState game, ILevelBuilder levelBuilder, Player player)
         {
-            LevelSize = new Size(1800, 1000);
             Game = game;
-            StartPos = data.StartPos;
-            Entities = data.Entities.Append(player).OrderBy(ent => ent.Priority).ToList();
+            var levelData = levelBuilder.BuildData(game, this);
+            LevelSize = levelData.LevelSize;
+            StartPos = levelData.StartPos;
+            Entities = levelData.Entities.Append(player).OrderBy(ent => ent.Priority).ToList();
+            Waypoints = levelData.Waypoints;
+            WPGraph = levelData.WPGraph;
             Mobs = Entities.Where(ent => ent is IMob).Select(mob => (IMob)mob).ToList();
         }
     }

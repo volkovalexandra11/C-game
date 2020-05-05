@@ -58,9 +58,11 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GraphicMethods.cs" />
     <Compile Include="Interfaces\ICutsceneTrigger.cs" />
     <Compile Include="Interfaces\ILevelBuilder.cs" />
     <Compile Include="Levels\LevelData.cs" />
+    <Compile Include="Levels\MobLevelBuilder.cs" />
     <Compile Include="Levels\TestLevel2Builder.cs" />
     <Compile Include="MobAI %28todo%29\WayPoint.cs" />
     <Compile Include="Mobs\Direction.cs" />
@@ -75,6 +77,7 @@
     <Compile Include="Interfaces\ICutscene.cs" />
     <Compile Include="Levels\DrawingPriority.cs" />
     <Compile Include="Levels\TestLevelBuilder.cs" />
+    <Compile Include="Mobs\Rogue.cs" />
     <Compile Include="Model\Collisions.cs" />
     <Compile Include="Model\Entities.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
@@ -148,6 +151,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Textures\MainMenu.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\RogueLeft.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\RogueRight.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Textures\SngButton.png">

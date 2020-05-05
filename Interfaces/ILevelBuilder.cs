@@ -10,6 +10,6 @@ namespace The_Game.Interfaces
 {
     public interface ILevelBuilder
     {
-        LevelData BuildData(GameState game);
+        LevelData BuildData(GameState game, Level level);
     }
 }

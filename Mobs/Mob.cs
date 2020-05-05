@@ -17,8 +17,8 @@ namespace The_Game.Mobs
         public bool Passable { get; }
         public DrawingPriority Priority { get; }
         public RectangleF Hitbox => new RectangleF(CornerPos, MobSize);
-        public string[] Textures { get; }
-        public string GetTexture() => getTexture();
+        public virtual string[] Textures { get; }
+        public virtual string GetTexture() => getTexture();
         protected Func<string> getTexture;
 
         private readonly HashSet<MobAction> mobActions;
@@ -34,7 +34,7 @@ namespace The_Game.Mobs
 
         protected GameState Game { get; }
 
-        public Level MobLevel;
+        protected Level MobLevel;
         public Vector2 Pos { get; set; }
 
         protected MobState State { get; set; }
@@ -119,13 +119,13 @@ namespace The_Game.Mobs
             ProcessActions();
             UpdatePosition();
             ProcessCollisions();
-            if (Game.PlayerActions.Contains(MobAction.Debug))
-            { Game.PlayerActions.Remove(MobAction.Debug); };
+            if (mobActions.Contains(MobAction.Debug))
+            { mobActions.Remove(MobAction.Debug); };
         }
 
         private void ProcessActions()
         {
-            if (Game.PlayerActions.Contains(MobAction.Jump))
+            if (mobActions.Contains(MobAction.Jump))
             {
                 if (State == MobState.Walking)
                 { 
@@ -138,17 +138,16 @@ namespace The_Game.Mobs
             HorGuidedVel = GetNewHorGuidedVel();
         }
 
-        public Mob(GameState game,
+        public Mob(GameState game, Level level,
             bool isPassable, Size size,
             DrawingPriority priority,
-            string[] textures, Vector2 startPos)
+            Vector2 startPos)
         {
             Game = game;
             Passable = isPassable;
             MobSize = size;
             Priority = priority;
-            Textures = textures;
-            MobLevel = game.Level;
+            MobLevel = level;
             if (priority == DrawingPriority.Player)
                 mobActions = game.PlayerActions;
             else

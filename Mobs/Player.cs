@@ -15,23 +15,27 @@ namespace The_Game.Mobs
 {
     public partial class Player : Mob
     {
-        public static string[] AllTextures
+        public override string[] Textures
             => new[] { "KnightLeft.png", "KnightRight.png" };
-        public string ChooseTexture()
+        public override string GetTexture()
         {
             return Dir == Direction.Left
                 ? "KnightLeft.png"
                 : "KnightRight.png";
         }
 
+        public void ChangeLevel(Level newLevel)
+        {
+            MobLevel = newLevel;
+        }
+
         public Player(GameState game)
             : base
             (
-                  game, true, new Size(90, 210), DrawingPriority.Player,
-                  AllTextures, Vector2.Zero
+                  game, null, true, new Size(90, 210), DrawingPriority.Player,
+                  Vector2.Zero
             )
         {
-            getTexture = ChooseTexture;
             State = MobState.Walking;
             Dir = Direction.Right;
         }
