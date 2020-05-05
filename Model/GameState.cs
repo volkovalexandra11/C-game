@@ -26,9 +26,9 @@ namespace The_Game.Model
             set
             {
                 level = value;
-                GamePlayer.MobLevel = value;
+                GamePlayer.ChangeLevel(value);
                 GamePlayer.Pos = level.StartPos;
-                if (LevelChanged != null) LevelChanged();
+                LevelChanged?.Invoke();
             }
         }
         public readonly HashSet<MobAction> PlayerActions;
@@ -52,16 +52,16 @@ namespace The_Game.Model
         {
             PlayerActions = new HashSet<MobAction>();
             GamePlayer = player ?? new Player(this);
-            ChangeLevel(new TestLevelBuilder());
+            //ChangeLevel(new TestLevelBuilder());
+            ChangeLevel(new MobLevelBuilder());
             ShowCutscene(Cutscene.StartCutscene);
         }
 
         public void ChangeLevel(ILevelBuilder nextLevel)
         {
-            var newLevel = new Level(this, nextLevel.BuildData(this), GamePlayer);
+            var newLevel = new Level(this, nextLevel, GamePlayer);
             Level = newLevel;
         }
-
 
         public void ShowCutscene(Cutscene cutscene)
         {

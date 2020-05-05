@@ -15,6 +15,7 @@ namespace The_Game.Game_Panels
     [System.ComponentModel.DesignerCategory("")]
     class LevelPanel : GamePanel
     {
+        private static bool DrawWaypointsOn = true;
         private Level PanelLevel { get; }
         public readonly Dictionary<IEntity, Dictionary<string, TextureBrush>> Textures;
 
@@ -43,6 +44,23 @@ namespace The_Game.Game_Panels
                 g.FillRectangle(texture, entity.Hitbox);
                 texture.ResetTransform();
             }
+            if (DrawWaypointsOn && PanelLevel.WPGraph != null)
+                DrawWaypoints(g);
+        }
+
+        private void DrawWaypoints(Graphics g)
+        {
+            var wpCircleRadius = 15;
+            foreach (var wp in PanelLevel.Waypoints)
+            {
+                g.FillEllipse(Brushes.BlueViolet,
+                    wp.X - wpCircleRadius, wp.Y - wpCircleRadius,
+                    2*wpCircleRadius, 2*wpCircleRadius);
+            }
+            foreach (var wpEdge in PanelLevel.WPGraph)
+                foreach (var endWP in wpEdge.Value.Keys)
+                    GraphicMethods.DrawArrow(g,
+                        wpEdge.Key, endWP);
         }
     }
 }

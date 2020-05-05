@@ -12,7 +12,7 @@ namespace The_Game.Levels
 {
     class TestLevel2Builder : ILevelBuilder
     {
-        public LevelData BuildData(GameState game)
+        public LevelData BuildData(GameState game, Level level)
         {
             var size = new Size(1800, 1000);
             return new LevelData

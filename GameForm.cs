@@ -150,7 +150,7 @@ namespace The_Game
             if (Game.CurrentCutscene != Cutscene.None)
             {
                 if (CutsceneShown == null || CutsceneShown.PanelCutscene != Game.CurrentCutscene)
-                        StartCutscene(Game.CurrentCutscene);
+                    StartCutscene(Game.CurrentCutscene);
             }
             else
                 Game.UpdateModel();
@@ -159,7 +159,7 @@ namespace The_Game
 
         protected override void OnKeyUp(KeyEventArgs e)
         {
-            base.OnKeyDown(e);
+            base.OnKeyUp(e);
             pressedKeys.Remove(e.KeyCode);
             if (Game != null && MobActions.ActionByKey.TryGetValue(e.KeyCode, out var keyAction))
                 Game.PlayerActions.Remove(keyAction);
