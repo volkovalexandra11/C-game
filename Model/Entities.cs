@@ -52,6 +52,18 @@ namespace The_Game.Model
         {
             Hitbox = new RectangleF(pos, size);
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj != null && obj.GetType() != GetType())
+                return false;
+            if (ReferenceEquals(obj, this))
+                return true;
+            var second = obj as CrumbledWall;
+            return second.Hitbox == Hitbox;
+        }
+
+        public override int GetHashCode() => base.GetHashCode();
     }
 
     public class Stump : IEntity, ITrigger
@@ -77,6 +89,51 @@ namespace The_Game.Model
             Game = game;
             Hitbox = new RectangleF(pos, size);
             Active = true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj != null && obj.GetType() != GetType())
+                return false;
+            if (ReferenceEquals(obj, this))
+                return true;
+            var second = obj as Stump;
+            return second.Hitbox == Hitbox && second.Game == Game && second.Active == Active;
+        }
+
+        public override int GetHashCode() => base.GetHashCode();
+    }
+
+    public class Ladder : IEntity
+    {
+        public bool Passable => false;
+
+        public DrawingPriority Priority => DrawingPriority.SolidSurface;
+
+        public RectangleF Hitbox { get; }
+
+        public string[] Textures => new[] { GetTexture() };
+
+        public string GetTexture() => "Ladder.png";
+
+        public Ladder(Size size, PointF pos)
+        {
+            Hitbox = new RectangleF(pos, size);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj != null && obj.GetType() != GetType())
+                return false;
+            if (ReferenceEquals(obj, this))
+                return true;
+            var second = obj as Ladder;
+            return second.Hitbox == Hitbox;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }
