@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using The_Game.Model;
 using The_Game.Levels;
 using The_Game.Interfaces;
+using The_Game.MobAI;
 
 namespace The_Game.Mobs
 {
@@ -18,8 +19,7 @@ namespace The_Game.Mobs
         public DrawingPriority Priority { get; }
         public RectangleF Hitbox => new RectangleF(CornerPos, MobSize);
         public virtual string[] Textures { get; }
-        public virtual string GetTexture() => getTexture();
-        protected Func<string> getTexture;
+        public virtual string GetTexture() => string.Empty;
 
         private readonly HashSet<MobAction> mobActions;
 
@@ -37,6 +37,8 @@ namespace The_Game.Mobs
         protected Level MobLevel;
         public Vector2 Pos { get; set; }
 
+        public MobPath PlannedPath { get; set; }
+
         protected MobState State { get; set; }
         protected Direction Dir { get; set; }
 
@@ -48,6 +50,13 @@ namespace The_Game.Mobs
         protected float OwnHorVel { get; set; }
         protected float HorGuidedVel { get; set; }
         protected Vector2 Velocity => new Vector2(OwnHorVel + HorGuidedVel, VerticalVel);
+
+        public Vector2 GetClosestWaypoint()
+        {
+            if (MobLevel.WPReverseGraph == null) throw new InvalidOperationException();
+            return MobLevel.Waypoints
+                .MinBy(wp => Vector2.DistanceSquared(Pos, wp));
+        }
 
         private float GetNewHorGuidedVel()
         {

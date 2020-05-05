@@ -24,13 +24,13 @@ namespace The_Game.Levels
 
         public List<IEntity> Entities { get; }
 
-        public List<IMob> Mobs { get; }
+        public List<Mob> Mobs { get; }
 
         public Vector2 StartPos { get; }
 
         public Vector2[] Waypoints { get; }
 
-        public Dictionary<Vector2, Dictionary<Vector2, float>> WPGraph { get; }
+        public Dictionary<Vector2, Dictionary<Vector2, float>> WPReverseGraph { get; }
 
         public Level(GameState game, ILevelBuilder levelBuilder, Player player)
         {
@@ -40,8 +40,8 @@ namespace The_Game.Levels
             StartPos = levelData.StartPos;
             Entities = levelData.Entities.Append(player).OrderBy(ent => ent.Priority).ToList();
             Waypoints = levelData.Waypoints;
-            WPGraph = levelData.WPGraph;
-            Mobs = Entities.Where(ent => ent is IMob).Select(mob => (IMob)mob).ToList();
+            WPReverseGraph = levelData.WPRevGraph;
+            Mobs = Entities.Where(ent => ent is Mob).Select(mob => (Mob)mob).ToList();
         }
     }
 }

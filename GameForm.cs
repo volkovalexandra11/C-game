@@ -74,6 +74,7 @@ namespace The_Game
                 e.Graphics.TranslateTransform((ClientSize.Width/verticalScalar - InternalSize.Width) / 2, 0);
             else
                 e.Graphics.TranslateTransform(0, (ClientSize.Height/horizontalScalar - InternalSize.Height) / 2);
+            e.Graphics.SetClip(new Rectangle(Point.Empty, InternalSize));
             DrawNormalizedForm(e.Graphics);
         }
 
