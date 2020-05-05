@@ -12,7 +12,7 @@ namespace The_Game
         private static readonly GameState Gs = new GameState();
         private static Player player = new Player(Gs);
         private Vector2 initialPosition;
-        
+
         [Test]
         public void TestGoingRight()
         {
@@ -38,7 +38,7 @@ namespace The_Game
             player.Update();
             Assert.AreEqual(initialPosition.X, player.Pos.X, 1e-7);
         }
-        
+
         [SetUp]
         public void SetUp()
         {
@@ -56,7 +56,7 @@ namespace The_Game
             var thisType = Gs.Level.LevelName;
             Assert.True(thisType == levelType);
         }
-        
+
         [Test]
         public void GameStateEntitiesTest()
         {
