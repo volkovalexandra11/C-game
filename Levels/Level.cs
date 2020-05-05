@@ -30,18 +30,65 @@ namespace The_Game.Levels
 
         public Vector2[] Waypoints { get; }
 
+        public string LevelName { get; }
+
         public Dictionary<Vector2, Dictionary<Vector2, float>> WPReverseGraph { get; }
 
-        public Level(GameState game, ILevelBuilder levelBuilder, Player player)
+        public Level(GameState game, ILevelBuilder levelBuilder, Player player, string levelName)
         {
             Game = game;
             var levelData = levelBuilder.BuildData(game, this);
+            levelName = HandleName(levelName);
+            LevelName = levelName;
             LevelSize = levelData.LevelSize;
             StartPos = levelData.StartPos;
             Entities = levelData.Entities.Append(player).OrderBy(ent => ent.Priority).ToList();
             Waypoints = levelData.Waypoints;
             WPReverseGraph = levelData.WPRevGraph;
             Mobs = Entities.Where(ent => ent is Mob).Select(mob => (Mob)mob).ToList();
+        }
+
+        private static string HandleName(string levelName)
+        {
+            var name = levelName;
+            if (name.StartsWith("The_Game"))
+                name = levelName.Split('.')[2];
+            name += 'A';
+            var sb = new StringBuilder();
+            var words = new List<string>();
+
+            for (var letterInd = 0; letterInd < name.Length; letterInd++)
+            {
+                if (char.IsUpper(name[letterInd]))
+                {
+                    if (sb.Length > 0)
+                    {
+                        words.Add(sb.ToString());
+                    }
+
+                    sb.Clear();
+                }
+
+                if (char.IsDigit(name[letterInd]))
+                {
+                    if (letterInd != 0 && !char.IsDigit(name[letterInd - 1]))
+                    {
+                        if (sb.Length > 0)
+                        {
+                            words.Add(sb.ToString());
+                        }
+
+                        sb.Clear();
+                    }
+                }
+
+                sb.Append(name[letterInd]);
+            }
+
+            //words.Add(sb.ToString());
+
+            var resultingName = string.Join(" ", words.ToArray());
+            return resultingName;
         }
     }
 }
