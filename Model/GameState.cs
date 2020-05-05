@@ -59,7 +59,8 @@ namespace The_Game.Model
 
         public void ChangeLevel(ILevelBuilder nextLevel)
         {
-            var newLevel = new Level(this, nextLevel, GamePlayer);
+            var name = nextLevel.GetType().ToString();
+            var newLevel = new Level(this, nextLevel, GamePlayer, name);
             Level = newLevel;
         }
 
