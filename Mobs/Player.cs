@@ -18,13 +18,22 @@ namespace The_Game.Mobs
     public partial class Player : Mob
     {
         public override string[] Textures
-            => new[] { "KnightLeft.png", "KnightRight.png" };
+            => new[] { "KnightLeft.png", "KnightRight.png", "KnightAttackLeft.png", "KnightAttackRight.png" };
         public override string GetTexture()
         {
+            if (IsAttacking)
+            {
+                return Dir == Direction.Left
+                    ? "KnightAttackLeft.png"
+                    : "KnightAttackRight.png";
+            }
             return Dir == Direction.Left
                 ? "KnightLeft.png"
                 : "KnightRight.png";
         }
+
+        private const int MobPathsUpdateTimeUpdates = 80;
+        private int TicksSinceLastUpdate { get; set; }
 
         public void ChangeLevel(Level newLevel)
         {
@@ -33,7 +42,13 @@ namespace The_Game.Mobs
 
         public override void Update()
         {
-            FindPathsToPlayer();
+            if (TicksSinceLastUpdate > MobPathsUpdateTimeUpdates && MobLevel.WPReverseGraph != null)
+            {
+                TicksSinceLastUpdate = 0;
+                FindPathsToPlayer();
+            }
+            else
+                TicksSinceLastUpdate++;
             base.Update();
         }
 
@@ -41,11 +56,12 @@ namespace The_Game.Mobs
             : base
             (
                   game, null, true, new Size(90, 210), DrawingPriority.Player,
-                  Vector2.Zero
+                  Vector2.Zero, 1000, 30, 100
             )
         {
             State = MobState.Walking;
             Dir = Direction.Right;
+            TicksSinceLastUpdate = MobPathsUpdateTimeUpdates / 2;
         }
 
         private void FindPathsToPlayer()
@@ -54,7 +70,7 @@ namespace The_Game.Mobs
                 GetClosestWaypoint(), MobLevel.WPReverseGraph, GetAIControlledMobData()
             ))
             {
-                pathToPlayer.Mob.PlannedPath = pathToPlayer;
+                pathToPlayer.Mob.PlannedPath = pathToPlayer.FirstWP;
             }
         }
 

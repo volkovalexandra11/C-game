@@ -10,7 +10,6 @@ namespace The_Game.Mobs
     {
         Walking,
         Jumping,
-        OnLadder,
-        Attacked
+        OnLadder
     }
 }
