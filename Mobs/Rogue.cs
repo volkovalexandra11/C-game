@@ -13,9 +13,16 @@ namespace The_Game.Mobs
 {
     public class Rogue : Mob
     {
+        public static Size RogueSize = new Size(90, 210);
+        public static Size RogueAttackSize
+            = new Size((int)(RogueSize.Width * 1.85), RogueSize.Height);
+
         public override string[] Textures
             => new[] { "RogueLeft.png", "RogueRight.png",
                 "RogueAttackLeft.png", "RogueAttackRight.png" };
+        public override Dictionary<string, Size> TextureSizes { get; }
+        public override Dictionary<string, Point> TextureMobPos { get; }
+
         public override string GetTexture()
         {
             if (IsAttacking)
@@ -29,11 +36,20 @@ namespace The_Game.Mobs
                 : "RogueRight.png";
         }
 
-        public Rogue(GameState game, Level level, Size size, Vector2 startPos)
-            : base(game, level, true, size,
+        public Rogue(GameState game, Level level, Vector2 startPos)
+            : base(game, level, true, RogueSize,
                   DrawingPriority.Mob, startPos, 100, 20, 100)
         {
-
+            TextureSizes = TextureSizesBuilder.Build(
+                "RogueLeft.png", "RogueRight.png",
+                "RogueAttackLeft.png", "RogueAttackRight.png",
+                RogueSize, RogueAttackSize
+            );
+            TextureMobPos = TextureMobPosBuilder.Build(
+                "RogueLeft.png", "RogueRight.png",
+                "RogueAttackLeft.png", "RogueAttackRight.png",
+                RogueSize, RogueAttackSize
+            );
         }
     }
 }

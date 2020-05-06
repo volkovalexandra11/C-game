@@ -17,8 +17,17 @@ namespace The_Game.Mobs
 {
     public partial class Player : Mob
     {
+        public static Size PlayerSize => new Size(90, 210);
+        public static Size PlayerAttackSize
+            => new Size((int)(PlayerSize.Width * 1.85), PlayerSize.Height);
+
         public override string[] Textures
-            => new[] { "KnightLeft.png", "KnightRight.png", "KnightAttackLeft.png", "KnightAttackRight.png" };
+            => new[] { "KnightLeft.png", "KnightRight.png",
+                "KnightAttackLeft.png", "KnightAttackRight.png" };
+
+        public override Dictionary<string, Size> TextureSizes { get; }
+        public override Dictionary<string, Point> TextureMobPos { get; }
+
         public override string GetTexture()
         {
             if (IsAttacking)
@@ -55,13 +64,24 @@ namespace The_Game.Mobs
         public Player(GameState game)
             : base
             (
-                  game, null, true, new Size(90, 210), DrawingPriority.Player,
+                  game, null, true, PlayerSize, DrawingPriority.Player,
                   Vector2.Zero, 1000, 30, 100
             )
         {
             State = MobState.Walking;
             Dir = Direction.Right;
             TicksSinceLastUpdate = MobPathsUpdateTimeUpdates / 2;
+
+            TextureSizes = TextureSizesBuilder.Build(
+                "KnightLeft.png", "KnightRight.png",
+                "KnightAttackLeft.png", "KnightAttackRight.png",
+                PlayerSize, PlayerAttackSize
+            );
+            TextureMobPos = TextureMobPosBuilder.Build(
+                "KnightLeft.png", "KnightRight.png",
+                "KnightAttackLeft.png", "KnightAttackRight.png",
+                PlayerSize, PlayerAttackSize
+            );
         }
 
         private void FindPathsToPlayer()

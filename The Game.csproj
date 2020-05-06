@@ -58,6 +58,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\EntityExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\GraphicsExtensions.cs" />
     <Compile Include="Interfaces\ICutsceneTrigger.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Levels\DrawingPriority.cs" />
     <Compile Include="Levels\TestLevelBuilder.cs" />
     <Compile Include="Mobs\Rogue.cs" />
+    <Compile Include="Mobs\TextureDictsBuilders.cs" />
     <Compile Include="Model\Collisions.cs" />
     <Compile Include="Model\Entities.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
