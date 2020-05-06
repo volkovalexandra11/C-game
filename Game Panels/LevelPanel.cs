@@ -49,10 +49,16 @@ namespace The_Game.Game_Panels
                         .ToDictionary(
                             textureName => textureName,
                             textureName => TextureLoader.LoadTextureBrush(
-                                textureName, Size.Round(ent.Hitbox.Size)
+                                textureName, GetEntTextureSize(ent, textureName)
                             )
                         )
                 );
+        }
+
+        private Size GetEntTextureSize(IEntity ent, string textureName)
+        {
+            if (ent is IMob mob) return mob.TextureSizes[textureName];
+            return Size.Round(ent.Hitbox.Size);
         }
 
         private void DrawInterface(Graphics g)
@@ -97,22 +103,27 @@ namespace The_Game.Game_Panels
 
         public override void Draw(Graphics g)
         {
+            DrawEntities(g);
+
+            if (DrawAttackZonesOn)
+                DrawAttackZones(g);
+
+            if (DrawWaypointsOn && PanelLevel.WPReverseGraph != null)
+                DrawWaypoints(g);
+
+            DrawInterface(g);
+        }
+
+        private void DrawEntities(Graphics g)
+        {
             foreach (var entity in PanelLevel.Entities)
             {
-                var texture = Textures[entity][entity.GetTexture()];
-                texture.TranslateTransform(entity.Hitbox.Left, entity.Hitbox.Top);
-                g.FillRectangle(texture, entity.Hitbox);
-                texture.ResetTransform();
+                var textureBox = entity.GetTextureBox();
+                var brush = Textures[entity][textureBox.TextureName];
+                brush.TranslateTransform(textureBox.TextureRect.Left, textureBox.TextureRect.Top);
+                g.FillRectangle(brush, textureBox.TextureRect);
+                brush.ResetTransform();
             }
-            if (DrawAttackZonesOn)
-            {
-                DrawAttackZones(g);
-            }
-            if (DrawWaypointsOn && PanelLevel.WPReverseGraph != null)
-            {
-                DrawWaypoints(g);
-            }
-            DrawInterface(g);
         }
 
         private void DrawAttackZones(Graphics g)

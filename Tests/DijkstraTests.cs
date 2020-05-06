@@ -28,7 +28,7 @@ namespace The_Game.Tests
             var startPoint = new Vector2(0, 0);
             var mobStartPos = new Vector2(5, 8);
             var target = Tuple.Create(new Vector2(5, 8),
-                (Mob)new Rogue(Gs, Gs.Level, new Size(90, 210), mobStartPos));
+                (Mob)new Rogue(Gs, Gs.Level, mobStartPos));
             var graph = LevelData.GetGraph(adjacencyLists);
             var dijkstraPath = MobAI.DijkstraPathFinder.FindPaths(startPoint, graph, new[] { target }).ToList();
             Assert.AreEqual(1, dijkstraPath.Count);
@@ -48,7 +48,7 @@ namespace The_Game.Tests
             var startPoint = new Vector2(0, 0);
             var mobStartPos = new Vector2(5, 8);
             var target = Tuple.Create(new Vector2(5, 8),
-                (Mob)new Rogue(Gs, Gs.Level, new Size(90, 210), mobStartPos));
+                (Mob)new Rogue(Gs, Gs.Level, mobStartPos));
             var graph = LevelData.GetReverseGraph(adjacencyLists);
             var dijkstraPath = MobAI.DijkstraPathFinder.FindPaths(startPoint, graph, new[] { target }).ToList();
             Assert.AreEqual(0, dijkstraPath.Count);
@@ -71,9 +71,9 @@ namespace The_Game.Tests
             var targets = new[]
             {
                 Tuple.Create(new Vector2(5, 8),
-                    (Mob) new Rogue(Gs, Gs.Level, new Size(90, 210), startPosFirst)),
+                    (Mob) new Rogue(Gs, Gs.Level, startPosFirst)),
                 Tuple.Create(new Vector2(1, 2),
-                    (Mob) new Rogue(Gs, Gs.Level, new Size(90, 210), startPosSecond))
+                    (Mob) new Rogue(Gs, Gs.Level, startPosSecond))
             };
             var graph = LevelData.GetGraph(adjacencyLists);
             var dijkstraPath = MobAI.DijkstraPathFinder.FindPaths(startPoint, graph, targets).ToList();
@@ -94,7 +94,7 @@ namespace The_Game.Tests
             var startPoint = new Vector2(0, 0);
             var mobStartPos = new Vector2(5, 8);
             var target = Tuple.Create(new Vector2(15, 48),
-                (Mob)new Rogue(Gs, Gs.Level, new Size(90, 210), mobStartPos));
+                (Mob)new Rogue(Gs, Gs.Level, mobStartPos));
             var graph = LevelData.GetGraph(adjacencyLists);
             var dijkstraPath = MobAI.DijkstraPathFinder.FindPaths(startPoint, graph, new[] { target }).ToList();
             Assert.AreEqual(1, dijkstraPath.Count);
@@ -114,7 +114,7 @@ namespace The_Game.Tests
             var startPoint = new Vector2(0, 0);
             var mobStartPos = new Vector2(5, 8);
             var target = Tuple.Create(new Vector2(5, 8),
-                (Mob)new Rogue(Gs, Gs.Level, new Size(90, 210), mobStartPos));
+                (Mob)new Rogue(Gs, Gs.Level, mobStartPos));
             var graph = LevelData.GetGraph(adjacencyLists);
             var dijkstraPath = MobAI.DijkstraPathFinder.FindPaths(startPoint, graph, new[] { target }).ToList();
             var pathCost = dijkstraPath[0].FirstWP.Cost;
@@ -136,7 +136,7 @@ namespace The_Game.Tests
             var startPoint = new Vector2(0, 0);
             var mobStartPos = new Vector2(5, 8);
             var target = Tuple.Create(new Vector2(1, 2),
-                (Mob)new Rogue(Gs, Gs.Level, new Size(90, 210), mobStartPos));
+                (Mob)new Rogue(Gs, Gs.Level, mobStartPos));
             var graph = LevelData.GetGraph(adjacencyLists);
             var dijkstraPath = MobAI.DijkstraPathFinder.FindPaths(startPoint, graph, new[] { target }).ToList();
             var pathCost = dijkstraPath[0].FirstWP.Cost;
@@ -158,7 +158,7 @@ namespace The_Game.Tests
             var startPoint = new Vector2(0, 0);
             var mobStartPos = new Vector2(5, 8);
             var target = Tuple.Create(new Vector2(15, 48),
-                (Mob)new Rogue(Gs, Gs.Level, new Size(90, 210), mobStartPos));
+                (Mob)new Rogue(Gs, Gs.Level, mobStartPos));
             var graph = LevelData.GetGraph(adjacencyLists);
             var dijkstraPath = MobAI.DijkstraPathFinder.FindPaths(startPoint, graph, new[] { target }).ToList();
             var pathCost = dijkstraPath[0].FirstWP.Cost;
@@ -180,7 +180,7 @@ namespace The_Game.Tests
             var startPoint = new Vector2(5, 8);
             var mobStartPos = new Vector2(5, 8);
             var target = Tuple.Create(new Vector2(5, 8),
-                (Mob)new Rogue(Gs, Gs.Level, new Size(90, 210), mobStartPos));
+                (Mob)new Rogue(Gs, Gs.Level, mobStartPos));
             var graph = LevelData.GetGraph(adjacencyLists);
             var dijkstraPath = MobAI.DijkstraPathFinder.FindPaths(startPoint, graph, new[] { target }).ToList();
             var pathCost = dijkstraPath[0].FirstWP.Cost;
@@ -202,7 +202,7 @@ namespace The_Game.Tests
             var startPoint = new Vector2(5, 8);
             var mobStartPos = new Vector2(5, 8);
             var target = Tuple.Create(new Vector2(5, 8),
-                (Mob)new Rogue(Gs, Gs.Level, new Size(90, 210), mobStartPos));
+                (Mob)new Rogue(Gs, Gs.Level, mobStartPos));
             var graph = LevelData.GetGraph(adjacencyLists);
             var dijkstraPath = MobAI.DijkstraPathFinder.FindPaths(startPoint, graph, new[] { target }).ToList();
             var pathCost = dijkstraPath[0].FirstWP.Cost;
@@ -227,9 +227,9 @@ namespace The_Game.Tests
             var target = new[]
             {
                 Tuple.Create(new Vector2(5, 8),
-                (Mob)new Rogue(Gs, Gs.Level, new Size(90, 210), mobStartPos)),
+                (Mob)new Rogue(Gs, Gs.Level, mobStartPos)),
                 Tuple.Create(new Vector2(15, 48),
-                (Mob)new Rogue(Gs, Gs.Level, new Size(90, 210), mobStartPos))
+                (Mob)new Rogue(Gs, Gs.Level, mobStartPos))
 
             };
             var graph = LevelData.GetGraph(adjacencyLists);

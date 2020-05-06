@@ -30,6 +30,8 @@ namespace The_Game.Mobs
         public RectangleF Hitbox => new RectangleF(CornerPos, MobSize);
         public virtual string[] Textures { get; }
         public virtual string GetTexture() => string.Empty;
+        public virtual Dictionary<string, Size> TextureSizes { get; }
+        public virtual Dictionary<string, Point> TextureMobPos { get; }
 
         private readonly HashSet<MobAction> mobActions;
 
@@ -141,6 +143,7 @@ namespace The_Game.Mobs
 
         private void AttackMelee()
         {
+            mobActions.Remove(MobAction.AttackMelee);
             UpdatesSinceLastAttack = 0;
             var hitbox = Hitbox;
             var dmgZone = AttackZone;

@@ -37,7 +37,7 @@ namespace The_Game.Levels
                     new Ground(new Size(1800, 300), new Point(0, 700)),
                     new CrumbledWall(new Size(150, 400), new Point(100, 300 + 10)),
                     new Ladder(new Size(100, 80), new Point(650, 620 + 10)),
-                    new Rogue(game, level, new Size(90, 210), new Vector2(5, 8))
+                    new Rogue(game, level, new Vector2(5, 8))
                 }.AsReadOnly(),
                 waypoints,
                 LevelData.GetReverseGraph(graphBlank)
