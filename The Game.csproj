@@ -62,7 +62,10 @@
     <Compile Include="Extensions\GraphicsExtensions.cs" />
     <Compile Include="Interfaces\ICutsceneTrigger.cs" />
     <Compile Include="Interfaces\ILevelBuilder.cs" />
+    <Compile Include="Interfaces\IMob.cs" />
     <Compile Include="Levels\LevelData.cs" />
+    <Compile Include="Levels\LevelForTest.cs" />
+    <Compile Include="Levels\LevelForTestsWithGraph.cs" />
     <Compile Include="Levels\MobLevelBuilder.cs" />
     <Compile Include="Levels\TestLevel2Builder.cs" />
     <Compile Include="MobAI\DijkstraPathFinder.cs" />
@@ -98,7 +101,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Levels\Level.cs" />
     <Compile Include="Loaders.cs" />
-    <Compile Include="Tests.cs" />
+    <Compile Include="Tests\DijkstraTests.cs" />
+    <Compile Include="Tests\GameStateTests.cs" />
+    <Compile Include="Tests\PlayerActionsTests.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -147,6 +152,12 @@
     <Content Include="Textures\KickingTheStump.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Textures\KnightAttackLeft.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\KnightAttackRight.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Textures\KnightLeft.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -154,6 +165,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Textures\MainMenu.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\RogueAttackLeft.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\RogueAttackRight.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Textures\RogueLeft.png">

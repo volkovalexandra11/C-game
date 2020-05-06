@@ -20,15 +20,15 @@ namespace The_Game.Model
                 { RectangleSide.Left,   new Point(-1, 0) }
             };
 
-        public static IEnumerable<IEntity> GetCollisions(Level level, IEntity ent)
+        public static IEnumerable<IEntity> GetCollisions(Level level, RectangleF zone)
         {
             return level.Entities
-                .Where(otherEnt => AreColliding(ent, otherEnt));
+                .Where(otherEnt => AreIntersecting(zone, otherEnt.Hitbox));
         }
 
-        private static bool AreColliding(IEntity ent1, IEntity ent2)
+        private static bool AreIntersecting(RectangleF rect1, RectangleF rect2)
         {
-            return !RectangleF.Intersect(ent1.Hitbox, ent2.Hitbox).IsEmpty;
+            return !RectangleF.Intersect(rect1, rect2).IsEmpty;
         }
 
         public static Vector2 GetCollisionOffset(RectangleF mobRect, RectangleF entRect)

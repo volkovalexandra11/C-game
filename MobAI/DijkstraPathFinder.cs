@@ -27,12 +27,13 @@ namespace The_Game.MobAI
                 var pointToOpen = pointsToOpen.MinBy(point => foundPaths[point].Cost);
                 pointsToOpen.Remove(pointToOpen);
                 var pointToOpenPath = foundPaths[pointToOpen];
-                var neighboursDists = graph[pointToOpen];
                 if (targets.TryGetValue(pointToOpen, out var mob))
                 {
                     targets.Remove(pointToOpen);
                     yield return new MobPath(mob, pointToOpenPath);
                 }
+                openedPoints.Add(pointToOpen);
+                if (!graph.TryGetValue(pointToOpen, out var neighboursDists)) continue;
                 foreach (var neighbour in GetNotOpenedNeighbours(pointToOpen, graph, openedPoints))
                 {
                     var newCost = pointToOpenPath.Cost + neighboursDists[neighbour];
@@ -50,7 +51,6 @@ namespace The_Game.MobAI
                         pointsToOpen.Add(neighbour);
                     }
                 }
-                openedPoints.Add(pointToOpen);
             }
         }
 

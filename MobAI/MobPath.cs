@@ -11,7 +11,7 @@ namespace The_Game.MobAI
     public class MobPath
     {
         public Mob Mob { get; }
-        public PathNode<Vector2> FirstWP { get; }
+        public PathNode<Vector2> FirstWP { get; private set; }
 
         public MobPath(Mob mob, PathNode<Vector2> firstWP)
         {

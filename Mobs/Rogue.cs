@@ -14,9 +14,16 @@ namespace The_Game.Mobs
     public class Rogue : Mob
     {
         public override string[] Textures
-            => new[] { "RogueLeft.png", "RogueRight.png" };
+            => new[] { "RogueLeft.png", "RogueRight.png",
+                "RogueAttackLeft.png", "RogueAttackRight.png" };
         public override string GetTexture()
         {
+            if (IsAttacking)
+            {
+                return Dir == Direction.Left
+                    ? "RogueAttackLeft.png"
+                    : "RogueAttackRight.png";
+            }
             return Dir == Direction.Left
                 ? "RogueLeft.png"
                 : "RogueRight.png";
@@ -24,7 +31,7 @@ namespace The_Game.Mobs
 
         public Rogue(GameState game, Level level, Size size, Vector2 startPos)
             : base(game, level, true, size,
-                  DrawingPriority.Mob, startPos)
+                  DrawingPriority.Mob, startPos, 100, 20, 100)
         {
 
         }

@@ -179,7 +179,7 @@ namespace The_Game
             base.OnMouseUp(e);
             pressedButtons.Remove(e.Button);
             if (Game != null && MobActions.ActionByButton.TryGetValue(e.Button, out var buttonAction))
-                Game.PlayerActions.Add(buttonAction);
+                Game.PlayerActions.Remove(buttonAction);
 
         }
 

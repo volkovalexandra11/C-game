@@ -59,8 +59,7 @@ namespace The_Game.Model
 
         public void ChangeLevel(ILevelBuilder nextLevel)
         {
-            var name = nextLevel.GetType().ToString();
-            var newLevel = new Level(this, nextLevel, GamePlayer, name);
+            var newLevel = new Level(this, nextLevel, GamePlayer);
             Level = newLevel;
         }
 
@@ -80,7 +79,11 @@ namespace The_Game.Model
                 throw new InvalidOperationException("GameState is paused! Cannot update!");
             foreach (var mob in Level.Mobs)
             {
-                mob.Update();
+                if (!mob.IsDead) mob.Update();
+            }
+            foreach (var deadMob in Level.Mobs.Where(mob => mob.IsDead).ToList())
+            {
+                Level.RemoveMob(deadMob);
             }
         }
     }

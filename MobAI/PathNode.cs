@@ -9,13 +9,13 @@ namespace The_Game.MobAI
 {
     public class PathNode<T> : IEnumerable<T>
     {
-        public T Value { get; }
+        public T Position { get; }
         public float Cost { get; set; }
         public PathNode<T> Previous { get; set; }
 
         public PathNode(T val, float cost, PathNode<T> prev)
         {
-            Value = val;
+            Position = val;
             Cost = cost;
             Previous = prev;
         }
@@ -25,7 +25,7 @@ namespace The_Game.MobAI
             var currNode = this;
             while (currNode != null)
             {
-                yield return currNode.Value;
+                yield return currNode.Position;
                 currNode = currNode.Previous;
             }
         }
