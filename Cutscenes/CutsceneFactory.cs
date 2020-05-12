@@ -28,13 +28,13 @@ namespace The_Game.Cutscenes
         private static CutscenePanel BuildStartCutscene(GameForm form, Cutscene cutscene)
         {
             return new CutscenePanel(form, cutscene,
-                "CastleCeremony.jpg", "StartCutscene.txt");
+                "CastleCeremony", "StartCutscene");
         }
 
         private static CutscenePanel BuildKickTheStumpCutscene(GameForm form, Cutscene cutscene)
         {
             return new CutscenePanel(form, cutscene,
-                "KickingTheStump.png", "KickTheStumpCutscene.txt");
+                "KickingTheStump", "KickTheStumpCutscene");
         }
     }
 }

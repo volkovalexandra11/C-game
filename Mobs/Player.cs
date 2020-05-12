@@ -22,27 +22,27 @@ namespace The_Game.Mobs
             => new Size((int)(PlayerSize.Width * 1.85), PlayerSize.Height);
 
         public override string[] Textures
-            => new[] { "KnightLeft.png", "KnightRight.png",
-                "KnightAttackLeft.png", "KnightAttackRight.png" };
+            => new[] { "KnightLeft", "KnightRight",
+                "KnightAttackLeft", "KnightAttackRight" };
 
         public override Dictionary<string, Size> TextureSizes { get; }
         public override Dictionary<string, Point> TextureMobPos { get; }
+
+        private const int MobPathsUpdateTimeUpdates = 80;
+        private int TicksSinceLastUpdate { get; set; }
 
         public override string GetTexture()
         {
             if (IsAttacking)
             {
                 return Dir == Direction.Left
-                    ? "KnightAttackLeft.png"
-                    : "KnightAttackRight.png";
+                    ? "KnightAttackLeft"
+                    : "KnightAttackRight";
             }
             return Dir == Direction.Left
-                ? "KnightLeft.png"
-                : "KnightRight.png";
+                ? "KnightLeft"
+                : "KnightRight";
         }
-
-        private const int MobPathsUpdateTimeUpdates = 80;
-        private int TicksSinceLastUpdate { get; set; }
 
         public void ChangeLevel(Level newLevel)
         {
@@ -73,13 +73,13 @@ namespace The_Game.Mobs
             TicksSinceLastUpdate = MobPathsUpdateTimeUpdates / 2;
 
             TextureSizes = TextureSizesBuilder.Build(
-                "KnightLeft.png", "KnightRight.png",
-                "KnightAttackLeft.png", "KnightAttackRight.png",
+                "KnightLeft", "KnightRight",
+                "KnightAttackLeft", "KnightAttackRight",
                 PlayerSize, PlayerAttackSize
             );
             TextureMobPos = TextureMobPosBuilder.Build(
-                "KnightLeft.png", "KnightRight.png",
-                "KnightAttackLeft.png", "KnightAttackRight.png",
+                "KnightLeft", "KnightRight",
+                "KnightAttackLeft", "KnightAttackRight",
                 PlayerSize, PlayerAttackSize
             );
         }

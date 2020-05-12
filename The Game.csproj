@@ -105,7 +105,9 @@
     <Compile Include="Loaders.cs" />
     <Compile Include="Tests\DijkstraTests.cs" />
     <Compile Include="Tests\GameStateTests.cs" />
+    <Compile Include="Tests\MobTests.cs" />
     <Compile Include="Tests\PlayerActionsTests.cs" />
+    <Compile Include="ResourceMap.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -139,7 +141,7 @@
     <Content Include="Textures\Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\CastleCeremony.jpg">
+    <Content Include="Textures\CastleCeremony.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Textures\CrumbledWall.png">

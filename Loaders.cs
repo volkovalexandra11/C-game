@@ -15,16 +15,18 @@ namespace The_Game
 
         public static Image LoadImage(string imgName)
         {
-            return Image.FromFile(Path.Combine(TextureFolder, imgName));
+            var fileName = TextureMap.GetTextureFile(imgName);
+            return Image.FromFile(Path.Combine(TextureFolder, fileName));
         }
 
-        public static Bitmap LoadBitmap(string imgName, Size size)
+        public static Bitmap LoadBitmap(string fileName, Size size)
         {
-            return new Bitmap(LoadImage(imgName), size);
+            return new Bitmap(LoadImage(fileName), size);
         }
 
         public static TextureBrush LoadTextureBrush(string imgName, Size size)
         {
+            var fileName = TextureMap.GetTextureFile(imgName);
             var bitmap = LoadBitmap(imgName, size);
             var brush = new TextureBrush(bitmap)
             {
@@ -40,8 +42,9 @@ namespace The_Game
 
         public static string CutsceneSubfolder => "CutscenesText";
 
-        public static string[] LoadCutsceneText(string path)
+        public static string[] LoadCutsceneText(string textName)
         {
+            var path = TextMap.GetTextFile(textName);
             var fileLines = LoadText(Path.Combine(TextFolder, CutsceneSubfolder, path));
             var cutsceneText = new List<string>();
             var currentScreenLines = new List<string>();

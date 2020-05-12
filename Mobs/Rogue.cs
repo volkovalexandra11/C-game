@@ -18,8 +18,8 @@ namespace The_Game.Mobs
             = new Size((int)(RogueSize.Width * 1.85), RogueSize.Height);
 
         public override string[] Textures
-            => new[] { "RogueLeft.png", "RogueRight.png",
-                "RogueAttackLeft.png", "RogueAttackRight.png" };
+            => new[] { "RogueLeft", "RogueRight",
+                "RogueAttackLeft", "RogueAttackRight" };
         public override Dictionary<string, Size> TextureSizes { get; }
         public override Dictionary<string, Point> TextureMobPos { get; }
 
@@ -28,12 +28,12 @@ namespace The_Game.Mobs
             if (IsAttacking)
             {
                 return Dir == Direction.Left
-                    ? "RogueAttackLeft.png"
-                    : "RogueAttackRight.png";
+                    ? "RogueAttackLeft"
+                    : "RogueAttackRight";
             }
             return Dir == Direction.Left
-                ? "RogueLeft.png"
-                : "RogueRight.png";
+                ? "RogueLeft"
+                : "RogueRight";
         }
 
         public Rogue(GameState game, Level level, Vector2 startPos)
@@ -41,13 +41,13 @@ namespace The_Game.Mobs
                   DrawingPriority.Mob, startPos, 100, 20, 100)
         {
             TextureSizes = TextureSizesBuilder.Build(
-                "RogueLeft.png", "RogueRight.png",
-                "RogueAttackLeft.png", "RogueAttackRight.png",
+                "RogueLeft", "RogueRight",
+                "RogueAttackLeft", "RogueAttackRight",
                 RogueSize, RogueAttackSize
             );
             TextureMobPos = TextureMobPosBuilder.Build(
-                "RogueLeft.png", "RogueRight.png",
-                "RogueAttackLeft.png", "RogueAttackRight.png",
+                "RogueLeft", "RogueRight",
+                "RogueAttackLeft", "RogueAttackRight",
                 RogueSize, RogueAttackSize
             );
         }
