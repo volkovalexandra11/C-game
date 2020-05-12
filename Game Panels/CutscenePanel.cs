@@ -28,11 +28,11 @@ namespace The_Game.Game_Panels
             return LineInd != CutsceneText.Length;
         }
 
-        public CutscenePanel(GameForm form, Cutscene cutscene, string backgroundImg, string textFile)
+        public CutscenePanel(GameForm form, Cutscene cutscene, string backgroundImg, string textName)
         {
             Form = form;
             PanelCutscene = cutscene;
-            CutsceneText = TextLoader.LoadCutsceneText(textFile);
+            CutsceneText = TextLoader.LoadCutsceneText(textName);
             BackgroundBrush = TextureLoader.LoadTextureBrush(
                 backgroundImg,
                 form.InternalSize

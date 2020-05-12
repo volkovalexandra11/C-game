@@ -18,7 +18,7 @@ namespace The_Game.Model
         public DrawingPriority Priority => DrawingPriority.Background;
         public RectangleF Hitbox { get; }
         public string[] Textures => new [] { GetTexture() };
-        public string GetTexture() => "Empty.png";
+        public string GetTexture() => "Empty";
 
         public bool Active { get ; set; }
 

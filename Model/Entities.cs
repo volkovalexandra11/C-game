@@ -17,7 +17,7 @@ namespace The_Game.Model
         public DrawingPriority Priority => DrawingPriority.Background;
         public RectangleF Hitbox { get; }
         public string[] Textures => new[] { GetTexture() };
-        public string GetTexture() => "Background.png";
+        public string GetTexture() => "Background";
 
         public Background(Size levelSize)
         {
@@ -32,7 +32,7 @@ namespace The_Game.Model
         public DrawingPriority Priority => DrawingPriority.SolidSurface;
         public RectangleF Hitbox { get; }
         public string[] Textures => new[] { GetTexture() };
-        public string GetTexture() => "Ground.png";
+        public string GetTexture() => "Ground";
 
         public Ground(Size size, Point pos)
         {
@@ -46,21 +46,11 @@ namespace The_Game.Model
         public DrawingPriority Priority => DrawingPriority.SolidSurface;
         public RectangleF Hitbox { get; }
         public string[] Textures => new[] { GetTexture() };
-        public string GetTexture() => "CrumbledWall.png";
+        public string GetTexture() => "CrumbledWall";
 
         public CrumbledWall(Size size, Point pos)
         {
             Hitbox = new RectangleF(pos, size);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj != null && obj.GetType() != GetType())
-                return false;
-            if (ReferenceEquals(obj, this))
-                return true;
-            var second = obj as CrumbledWall;
-            return second.Hitbox == Hitbox;
         }
 
         public override int GetHashCode() => base.GetHashCode();
@@ -72,7 +62,7 @@ namespace The_Game.Model
         public DrawingPriority Priority => DrawingPriority.SolidSurface;
         public RectangleF Hitbox { get; }
         public string[] Textures => new[] { GetTexture() };
-        public string GetTexture() => "Stump.png";
+        public string GetTexture() => "Stump";
 
         private GameState Game { get; }
 
@@ -91,16 +81,6 @@ namespace The_Game.Model
             Active = true;
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj != null && obj.GetType() != GetType())
-                return false;
-            if (ReferenceEquals(obj, this))
-                return true;
-            var second = obj as Stump;
-            return second.Hitbox == Hitbox && second.Game == Game && second.Active == Active;
-        }
-
         public override int GetHashCode() => base.GetHashCode();
     }
 
@@ -114,21 +94,11 @@ namespace The_Game.Model
 
         public string[] Textures => new[] { GetTexture() };
 
-        public string GetTexture() => "Ladder.png";
+        public string GetTexture() => "Ladder";
 
         public Ladder(Size size, PointF pos)
         {
             Hitbox = new RectangleF(pos, size);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj != null && obj.GetType() != GetType())
-                return false;
-            if (ReferenceEquals(obj, this))
-                return true;
-            var second = obj as Ladder;
-            return second.Hitbox == Hitbox;
         }
 
         public override int GetHashCode()

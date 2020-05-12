@@ -43,7 +43,7 @@ namespace The_Game.Game_Panels
             menuTable.ColumnCount = 3;
             menuTable.RowCount = 3;
 
-            menuTable.BackgroundImage = TextureLoader.LoadImage("MainMenu.png");
+            menuTable.BackgroundImage = TextureLoader.LoadImage("MainMenu");
             menuTable.BackgroundImageLayout = ImageLayout.Stretch;
 
             //menuTable.CellBorderStyle = TableLayoutPanelCellBorderStyle.InsetDouble;
@@ -59,9 +59,9 @@ namespace The_Game.Game_Panels
 
         private static Button GetNewGameButton()
            => new PictureButton(
-                "SngButton.png",
-                "SngButtonHover.png",
-                "SngButtonPressed.png"
+                "SngButton",
+                "SngButtonHover",
+                "SngButtonPressed"
            )
            { 
                Dock = DockStyle.Fill,
