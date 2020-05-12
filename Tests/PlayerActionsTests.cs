@@ -11,14 +11,14 @@ namespace The_Game
 {
     public class PlayerActionsTests
     {
-        private static readonly GameState Gs = new GameState();
-        private static Player player = new Player(Gs);
+        private static readonly GameState gs = new GameState();
+        private static readonly Player player = gs.GamePlayer;
         private Vector2 initialPosition;
 
         [Test]
         public void TestGoingRightHorizontalPos()
         {
-            Gs.PlayerActions.Add(MobAction.GoRight);
+            gs.PlayerActions.Add(MobAction.GoRight);
             player.Update();
             Assert.True(initialPosition.X < player.Pos.X);
         }
@@ -26,7 +26,7 @@ namespace The_Game
         [Test]
         public void TestGoingRightVerticalPos()
         {
-            Gs.PlayerActions.Add(MobAction.GoRight);
+            gs.PlayerActions.Add(MobAction.GoRight);
             player.Update();
             Assert.AreEqual(initialPosition.Y, player.Pos.Y, 1e-7);
         }
@@ -34,7 +34,7 @@ namespace The_Game
         [Test]
         public void TestGoingLeftHorizontalPos()
         {
-            Gs.PlayerActions.Add(MobAction.GoLeft);
+            gs.PlayerActions.Add(MobAction.GoLeft);
             player.Update();
             Assert.True(initialPosition.X > player.Pos.X);
             Assert.AreEqual(initialPosition.Y, player.Pos.Y, 1e-7);
@@ -43,7 +43,7 @@ namespace The_Game
         [Test]
         public void TestGoingLeftVerticalPos()
         {
-            Gs.PlayerActions.Add(MobAction.GoLeft);
+            gs.PlayerActions.Add(MobAction.GoLeft);
             player.Update();
             Assert.AreEqual(initialPosition.Y, player.Pos.Y, 1e-7);
         }
@@ -52,20 +52,32 @@ namespace The_Game
         [Test]
         public void TestJumping()
         {
-            Gs.PlayerActions.Add(MobAction.Jump);
+            gs.PlayerActions.Add(MobAction.Jump);
             player.Update();
             Assert.AreEqual(initialPosition.X, player.Pos.X, 1e-7);
+        }
+
+        [Test]
+        public void TestKillingMob()
+        {
+            var mob = gs.Level.Mobs[0];
+            for (var i = 0; i < 100; i++)
+                gs.UpdateModel();
+            for (var i = 0; i < 100; i++)
+            {
+                gs.PlayerActions.Add(MobAction.AttackMelee);
+                gs.UpdateModel();
+            }
+            Assert.True(mob.IsDead);
         }
 
         [SetUp]
         public void SetUp()
         {
-            var level = new Level12ForTests();
-            Gs.ChangeLevel(level);
-            player = new Player(Gs);
-            var plLevel = new Level(Gs, new Level12ForTests(), player, nameof(Level12ForTests));
-            player.ChangeLevel(plLevel);
-            Gs.PlayerActions.Clear();
+            var level = new LevelForTestsWithGraph();
+            gs.ChangeLevel(level);
+            gs.EndCutscene();
+            gs.PlayerActions.Clear();
             initialPosition = player.Pos;
         }
     }

@@ -18,44 +18,32 @@ namespace The_Game.Tests
     {
         private static readonly GameState gs = new GameState();
         private readonly Player player = gs.GamePlayer;
-        
-        [Test]
-        public void MobDoesNotRepeatPlayerAction()
-        {
-            var mobs = gs.Level.Mobs;
-            var initialPos = new Vector2(0,0);
-            if (mobs.Count > 0) initialPos = mobs[0].Pos;
-            gs.PlayerActions.Add(MobAction.Jump);
-            player.Update();
-            Assert.AreEqual(initialPos.Y, mobs[0].Pos.Y, 1e-7);
-        }
 
         [SetUp]
         public void SetUp()
         {
             var level = new LevelForTestsWithGraph();
             gs.ChangeLevel(level);
-            var plLevel = new Level(gs, level, player);
-            player.ChangeLevel(plLevel);
             gs.EndCutscene();
         }
 
         [Test]
-        //чет непонятно, почему не работает(((
-        public void PlayerDiesWhenDoingNoting()
+        public void MobDoesNotRepeatPlayerAction()
         {
             var mobs = gs.Level.Mobs;
-            var mPos = mobs[0].Pos;
-            var a = player.HP;
-            gs.GamePlayer.Pos = new Vector2(500, 700);
-            for (var count = 0; count < 10000; count++)
+            var initialPos = mobs[0].Pos;
+            gs.PlayerActions.Add(MobAction.Jump);
+            player.Update();
+            Assert.AreEqual(initialPos.Y, mobs[0].Pos.Y, 1e-7);
+        }
+
+        [Test]
+        public void PlayerDiesWhenDoingNoting()
+        {
+            for (var count = 0; count < 2000; count++)
             {
                 gs.UpdateModel();
             }
-            gs.UpdateModel();
-            var b = player.HP;
-            var mobPos = gs.Level.Mobs[0].Pos;
-            var playerPos = player.Pos;
             Assert.True(player.IsDead);
         }
 
@@ -63,15 +51,27 @@ namespace The_Game.Tests
         public void MobMoves()
         {
             var mob = gs.Level.Mobs[0];
-            while (mob.PlannedPath == null)
+            var inPos = mob.Pos;
+            for (var i  = 0; i < 100; i++)
+                gs.UpdateModel();
+            var curPos = mob.Pos;
+            Assert.Less(curPos.X, inPos.X);
+            Assert.Greater(curPos.Y, inPos.Y);
+            Assert.AreEqual(550, curPos.X, 20);
+        }
+
+        [Test]
+        public void MobsDoNotKillEachOther()
+        {
+            var firstMob = gs.Level.Mobs[0];
+            var secondMob = gs.Level.Mobs[1];
+            var initialHP = firstMob.HP;
+            for (var i = 0; i < 1000; i++)
             {
                 gs.UpdateModel();
             }
-
-            var inPos = mob.Pos;
-            mob.Update();
-            var curPos = mob.Pos;
-            Assert.Less(curPos.X, inPos.X);
+            Assert.AreEqual(initialHP,firstMob.HP);
+            Assert.AreEqual(initialHP, secondMob.HP);
         }
     }
 }

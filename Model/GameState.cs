@@ -53,7 +53,7 @@ namespace The_Game.Model
             PlayerActions = new HashSet<MobAction>();
             GamePlayer = player ?? new Player(this);
             //ChangeLevel(new TestLevelBuilder());
-            ChangeLevel(new MobLevelBuilder());
+            ChangeLevel(new Level1());
             ShowCutscene(Cutscene.StartCutscene);
         }
 
@@ -77,9 +77,9 @@ namespace The_Game.Model
         {
             if (IsPaused)
                 throw new InvalidOperationException("GameState is paused! Cannot update!");
-            foreach (var mob in Level.Mobs)
+            foreach (var mob in Level.Mobs.Where(mob => !mob.IsDead))
             {
-                if (!mob.IsDead) mob.Update();
+                mob.Update();
             }
             foreach (var deadMob in Level.Mobs.Where(mob => mob.IsDead).ToList())
             {

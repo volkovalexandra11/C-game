@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using NUnit.Framework;
@@ -12,6 +11,88 @@ namespace The_Game.Tests
     public class DijkstraTests
     {
         private static readonly GameState Gs = new GameState();
+
+        [Test]
+        public void SimpleTest()
+        {
+            var adjacencyLists = new[]
+            {
+                new[] { new Vector2(0, 0), new Vector2(3, 4) }
+            };
+
+            var start = new Vector2(0, 0);
+            var graph = LevelData.GetGraph(adjacencyLists);
+            var mobStartPos = new Vector2(3, 4);
+            var target = Tuple.Create(new Vector2(3, 4),
+                (Mob)new Rogue(Gs, Gs.Level, mobStartPos));
+            var dijkstraPath = MobAI.DijkstraPathFinder.FindPaths(start, graph, new []{target}).ToList();
+            Assert.AreEqual(1,dijkstraPath.Count);
+            var pathCost = dijkstraPath[0].FirstWP.Cost;
+            Assert.AreEqual(5, pathCost);
+        }
+
+        [Test]
+        public void SimpleTestWithNoPath()
+        {
+            var adjacencyLists = new[]
+            {
+                new[] { new Vector2(0, 0), new Vector2(3, 4) }
+            };
+
+            var start = new Vector2(0, 0);
+            var graph = LevelData.GetGraph(adjacencyLists);
+            var mobStartPos = new Vector2(5, 8);
+            var target = Tuple.Create(new Vector2(5, 8),
+                (Mob)new Rogue(Gs, Gs.Level, mobStartPos));
+            var dijkstraPath = MobAI.DijkstraPathFinder.FindPaths(start, graph, new[] { target }).ToList();
+            Assert.AreEqual(0, dijkstraPath.Count);
+        }
+
+        [Test]
+        public void SimpleTestWithLoop()
+        {
+            var adjacencyLists = new[]
+            {
+                new[] { new Vector2(0, 0), new Vector2(3, 4), new Vector2(0,0),  }
+            };
+
+            var start = new Vector2(0, 0);
+            var graph = LevelData.GetGraph(adjacencyLists);
+            var mobStartPos = new Vector2(0, 0);
+            var target = Tuple.Create(new Vector2(0, 0),
+                (Mob)new Rogue(Gs, Gs.Level, mobStartPos));
+            var dijkstraPath = MobAI.DijkstraPathFinder.FindPaths(start, graph, new[] { target }).ToList();
+            Assert.AreEqual(1, dijkstraPath.Count);
+            var pathCost = dijkstraPath[0].FirstWP.Cost;
+            Assert.AreEqual(0, pathCost);
+        }
+        
+        [Test]
+        public void SimpleTestWithTwoTargets()
+        {
+            var adjacencyLists = new[]
+            {
+                new[] { new Vector2(0, 0), new Vector2(3, 4), new Vector2(0,0),  }
+            };
+
+            var start = new Vector2(0, 0);
+            var graph = LevelData.GetGraph(adjacencyLists);
+            var mobStartPos = new Vector2(0, 0);
+            var target = new[] 
+            { 
+                Tuple.Create(new Vector2(0, 0),
+                (Mob)new Rogue(Gs, Gs.Level, mobStartPos)),
+
+                Tuple.Create(new Vector2(3, 4),
+                    (Mob)new Rogue(Gs, Gs.Level, mobStartPos))
+            };
+            var dijkstraPath = MobAI.DijkstraPathFinder.FindPaths(start, graph, target).ToList();
+            Assert.AreEqual(2, dijkstraPath.Count);
+            var pathCost = dijkstraPath[0].FirstWP.Cost;
+            Assert.AreEqual(0, pathCost);
+            pathCost = dijkstraPath[1].FirstWP.Cost;
+            Assert.AreEqual(5, pathCost);
+        }
 
         [Test]
         public void DijkstraFindsWay()
