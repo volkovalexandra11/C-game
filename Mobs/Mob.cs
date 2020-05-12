@@ -42,9 +42,13 @@ namespace The_Game.Mobs
 
         private const float initialJumpVelocity = 0.5f;
 
-        private bool IsStill => Math.Abs(HorGuidedVel) <= 1e-2f;
-        private bool IsGoingRight => HorGuidedVel > 1e-2f;
-        private bool IsGoingLeft => HorGuidedVel < -1e-2f;
+        private const float initialThrowbackVertVelocity = 0.3f;
+        private const float initialThrowbackHorVelocity
+            = 0.4f * maxWalkingVelocity;
+
+        private bool IsStill => Math.Abs(GuidedHorVel) <= 1e-2f;
+        private bool IsGoingRight => GuidedHorVel > 1e-2f;
+        private bool IsGoingLeft => GuidedHorVel < -1e-2f;
 
         protected GameState Game { get; }
 
@@ -73,8 +77,8 @@ namespace The_Game.Mobs
 
         protected float VerticalVel { get; set; }
         protected float OwnHorVel { get; set; }
-        protected float HorGuidedVel { get; set; }
-        protected Vector2 Velocity => new Vector2(OwnHorVel + HorGuidedVel, VerticalVel);
+        protected float GuidedHorVel { get; set; }
+        protected Vector2 Velocity => new Vector2(OwnHorVel + GuidedHorVel, VerticalVel);
 
         protected const int MinChangeDirTimeUpdates = 10;
         protected int UpdatesSinceChangeOfDir;
@@ -152,13 +156,19 @@ namespace The_Game.Mobs
                 .Select(ent => (Mob)ent)
             )
             {
-                damagedMob.TakeDamage(Damage);
+                damagedMob.TakeDamage(this, Damage);
             }
         }
 
-        private void TakeDamage(int dmg)
+        private void TakeDamage(Mob attacker, int dmg)
         {
+            ThrowbackMob(attacker);
             HP -= dmg;
+        }
+
+        private void ThrowbackMob(Mob attacker)
+        {
+            
         }
 
         private Vector2 GetNewPosition()
@@ -265,7 +275,7 @@ namespace The_Game.Mobs
             }
             if (mobActions.Contains(MobAction.AttackMelee))
                 TryAttackMelee();
-            HorGuidedVel = GetNewHorGuidedVel();
+            GuidedHorVel = GetNewHorGuidedVel();
         }
 
         private void ProcessDirectionChangeTimer()
