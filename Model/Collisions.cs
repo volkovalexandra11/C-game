@@ -20,10 +20,11 @@ namespace The_Game.Model
                 { RectangleSide.Left,   new Point(-1, 0) }
             };
 
-        public static IEnumerable<IEntity> GetCollisions(Level level, RectangleF zone)
+        public static List<IEntity> GetCollisions(Level level, RectangleF zone)
         {
             return level.Entities
-                .Where(otherEnt => AreIntersecting(zone, otherEnt.Hitbox));
+                .Where(otherEnt => AreIntersecting(zone, otherEnt.Hitbox))
+                .ToList();
         }
 
         private static bool AreIntersecting(RectangleF rect1, RectangleF rect2)

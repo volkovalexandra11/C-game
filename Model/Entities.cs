@@ -86,7 +86,7 @@ namespace The_Game.Model
 
     public class Ladder : IEntity
     {
-        public bool Passable => false;
+        public bool Passable => true;
 
         public DrawingPriority Priority => DrawingPriority.SolidSurface;
 
@@ -96,7 +96,7 @@ namespace The_Game.Model
 
         public string GetTexture() => "Ladder";
 
-        public Ladder(Size size, PointF pos)
+        public Ladder(Size size, Point pos)
         {
             Hitbox = new RectangleF(pos, size);
         }

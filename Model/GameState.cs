@@ -20,6 +20,10 @@ namespace The_Game.Model
     {
         public Player GamePlayer { get; }
         private Level level;
+
+        private static readonly ILevelBuilder initialLevelBuilder
+            = new MobLevelBuilder();
+
         public Level Level
         {
             get => level;
@@ -48,12 +52,12 @@ namespace The_Game.Model
 
         public event Action LevelChanged;
 
-        public GameState(Player player = null)
+        public GameState(Player player = null, ILevelBuilder startingLevelBuilder = null)
         {
             PlayerActions = new HashSet<MobAction>();
             GamePlayer = player ?? new Player(this);
-            //ChangeLevel(new TestLevelBuilder());
-            ChangeLevel(new MobLevelBuilder());
+            startingLevelBuilder = startingLevelBuilder ?? initialLevelBuilder;
+            ChangeLevel(startingLevelBuilder);
             ShowCutscene(Cutscene.StartCutscene);
         }
 

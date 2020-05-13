@@ -37,18 +37,21 @@ namespace The_Game.Mobs
 
         private const float proximityConst = 400;
 
-        private const float gravAcceleration = 0.002f;
-        private const float maxWalkingVelocity = 1.3f;
+        private const float gravAcceleration = 0.2f;
+        private const float maxWalkingVelocity = 10f;
 
-        private const float initialJumpVelocity = 0.5f;
+        private const float initialJumpVelocity = 5f;
 
-        private const float initialThrowbackVertVelocity = 0.3f;
+        private const float initialThrowbackVertVelocity
+            = 0.6f * initialJumpVelocity;
         private const float initialThrowbackHorVelocity
-            = 0.4f * maxWalkingVelocity;
+            = 0.8f * maxWalkingVelocity;
 
-        private bool IsStill => Math.Abs(GuidedHorVel) <= 1e-2f;
-        private bool IsGoingRight => GuidedHorVel > 1e-2f;
-        private bool IsGoingLeft => GuidedHorVel < -1e-2f;
+        private const float ladderClimbingVelocity = 3f;
+
+        private bool IsStill => Math.Abs(GuidedHorVel) <= 0.1f;
+        private bool IsGoingRight => GuidedHorVel > 0.1f;
+        private bool IsGoingLeft => GuidedHorVel < -0.1f;
 
         protected GameState Game { get; }
 
@@ -83,7 +86,7 @@ namespace The_Game.Mobs
         protected const int MinChangeDirTimeUpdates = 10;
         protected int UpdatesSinceChangeOfDir;
 
-        protected const int AttackTimeUpdates = 30;
+        protected const int AttackTimeUpdates = 90;
         protected int UpdatesSinceLastAttack;
 
         public RectangleF AttackZone
@@ -101,6 +104,7 @@ namespace The_Game.Mobs
         }
 
         protected bool IsAttacking => UpdatesSinceLastAttack < AttackTimeUpdates;
+        protected bool IsOnLadder { get; set; }
 
         private event Action EndUpdate;
 
@@ -140,52 +144,29 @@ namespace The_Game.Mobs
             State = MobState.Jumping;
         }
 
-        private void TryAttackMelee()
+        public virtual void Update()
         {
-            if (!IsDead && !IsAttacking) AttackMelee();
+            var collisions = Collisions.GetCollisions(MobLevel, Hitbox);
+            PreprocessCollisions(collisions);
+            if (PlannedPath != null) FillActions();
+            ProcessActions(collisions);
+            UpdatePosition(collisions);
+            ProcessCollisions(collisions);
+
+            if (mobActions.Contains(MobAction.Debug))
+            { mobActions.Remove(MobAction.Debug); };
+
+            EndUpdate();
         }
 
-        private void AttackMelee()
+        private void PreprocessCollisions(List<IEntity> collisions)
         {
-            mobActions.Remove(MobAction.AttackMelee);
-            UpdatesSinceLastAttack = 0;
-            var hitbox = Hitbox;
-            var dmgZone = AttackZone;
-            foreach (var damagedMob in Collisions.GetCollisions(MobLevel, dmgZone)
-                .Where(ent => ent is Mob)
-                .Select(ent => (Mob)ent)
-            )
-            {
-                damagedMob.TakeDamage(this, Damage);
-            }
+            IsOnLadder = collisions.Where(ent => ent is Ladder).Any();
         }
 
-        private void TakeDamage(Mob attacker, int dmg)
-        {
-            ThrowbackMob(attacker);
-            HP -= dmg;
-        }
-
-        private void ThrowbackMob(Mob attacker)
-        {
-            
-        }
-
-        private Vector2 GetNewPosition()
-        {
-            if (State == MobState.Jumping)
-            {
-                var newPos = Pos + 10 * Velocity;
-                VerticalVel += 10 * gravAcceleration;
-                return newPos;
-            }
-            return Pos + 10 * Velocity;
-        }
-
-        private void ProcessCollisions()
+        private void ProcessCollisions(List<IEntity> collisions)
         {
             var mobOffset = Vector2.Zero;
-            var collisions = Collisions.GetCollisions(MobLevel, Hitbox);
             foreach (var ent in collisions)
             {
                 if (!ent.Passable)
@@ -193,15 +174,17 @@ namespace The_Game.Mobs
                 ProcessCollision(ent);
             }
             Pos += mobOffset;
-            if (Collisions.IsStandingOnSurface(MobLevel, this))
+            if (Collisions.IsStandingOnSurface(MobLevel, this) || IsOnLadder)
             {
-                if (State == MobState.Jumping && VerticalVel > 0)
+                if (State == MobState.Jumping)
+                {
+                    VerticalVel = 0;
                     State = MobState.Walking;
+                }
             }
             else
             {
-                if (State != MobState.Jumping)
-                    State = MobState.Jumping;
+                State = MobState.Jumping;
             }
         }
 
@@ -209,22 +192,36 @@ namespace The_Game.Mobs
         {
         }
 
-        private void UpdatePosition()
+        private void UpdatePosition(List<IEntity> collisions)
         {
-            Pos = GetNewPosition();
+            GuidedHorVel = GetNewHorGuidedVel();
+            OwnHorVel = Math.Abs(OwnHorVel) < 0.1f
+                ? 0
+                : 0.95f * OwnHorVel;
+            if (State == MobState.Jumping && !IsOnLadder)
+            {
+                VerticalVel += gravAcceleration;
+            }
+            Pos += Velocity;
         }
 
-        public virtual void Update()
+        private void ProcessActions(List<IEntity> collisions)
         {
-            if (PlannedPath != null) FillActions();
-            ProcessActions();
-            UpdatePosition();
-            ProcessCollisions();
-
-            if (mobActions.Contains(MobAction.Debug))
-            { mobActions.Remove(MobAction.Debug); };
-
-            EndUpdate();
+            if (IsOnLadder)
+            {
+                VerticalVel = mobActions.Contains(MobAction.GoUp)
+                    ? - ladderClimbingVelocity
+                    : ladderClimbingVelocity;
+            }
+            if (mobActions.Contains(MobAction.Jump))
+            {
+                if (State == MobState.Walking)
+                {
+                    Jump();
+                }
+            }
+            if (mobActions.Contains(MobAction.AttackMelee))
+                TryAttackMelee();
         }
 
         private void FillActions()
@@ -260,22 +257,46 @@ namespace The_Game.Mobs
             if (PlannedPath.Position.X < Pos.X) mobActions.Add(MobAction.GoLeft);
         }
 
-
-        private void ProcessActions()
+        private void TryAttackMelee()
         {
-            if (mobActions.Contains(MobAction.Jump))
+            if (!IsDead && !IsAttacking) AttackMelee();
+        }
+
+        private void AttackMelee()
+        {
+            mobActions.Remove(MobAction.AttackMelee);
+            UpdatesSinceLastAttack = 0;
+            var hitbox = Hitbox;
+            var dmgZone = AttackZone;
+            foreach (var damagedMob in Collisions.GetCollisions(MobLevel, dmgZone)
+                .Where(ent => ent is Mob)
+                .Select(ent => (Mob)ent)
+            )
             {
-                if (State == MobState.Walking)
-                {
-                    Jump();
-                }
-                else if (State == MobState.OnLadder)
-                {
-                } //TODO
+                damagedMob.TakeDamage(this, Damage);
             }
-            if (mobActions.Contains(MobAction.AttackMelee))
-                TryAttackMelee();
-            GuidedHorVel = GetNewHorGuidedVel();
+        }
+
+        private void TakeDamage(Mob attacker, int dmg)
+        {
+            ThrowbackMob(attacker);
+            HP -= dmg;
+        }
+
+        private void ThrowbackMob(Mob attacker)
+        {
+            if (VerticalVel > - 2 * initialJumpVelocity)
+            {
+                State = MobState.Jumping;
+                VerticalVel -= initialThrowbackVertVelocity;
+            }
+            if (Math.Abs(OwnHorVel) < maxWalkingVelocity)
+            {
+                if (attacker.Pos.X < Pos.X)
+                    OwnHorVel += initialThrowbackHorVelocity;
+                else
+                    OwnHorVel -= initialThrowbackHorVelocity;
+            }
         }
 
         private void ProcessDirectionChangeTimer()
