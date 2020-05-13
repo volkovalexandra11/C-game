@@ -23,8 +23,7 @@ namespace The_Game.Levels
                 new Ground(new Size(2000, 300), new Point(-100, 800)),
                 new CrumbledWall(new Size(200, 700), new Point(0, 300)),
                 new Ground(new Size(900, 150), new Point(1000, 300)),
-                new Rogue(game, level, new Vector2(1600, 300)),
-                new Ladder(new Size(40, 500), new Point(960, 300))
+                new Rogue(game, level, new Vector2(1600, 300))
             }.AsReadOnly();
             var waypoints = new Vector2[]
             {
