@@ -4,7 +4,10 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Media;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -12,6 +15,7 @@ using System.Windows.Input;
 using The_Game.Cutscenes;
 using The_Game.Game_Panels;
 using The_Game.Interfaces;
+using The_Game.Levels;
 using The_Game.Model;
 
 namespace The_Game
@@ -103,6 +107,8 @@ namespace The_Game
             Stage = GameplayStage.MainMenu;
 
             Timer = new Timer() { Interval = TimerInterval };
+            var soundplayer = new SoundPlayer("bensound-epic.wav");
+            soundplayer.PlayLooping();
         }
 
         public void StartGame(GameState gameState = null)
@@ -114,6 +120,7 @@ namespace The_Game
             Stage = GameplayStage.InGame;
             Timer.Tick += OnTimerTick;
             Timer.Start();
+            while (Controls.Count > 0) Controls[0].Dispose();
         }
 
         public void StartCutscene(Cutscene cutscene)
@@ -124,12 +131,27 @@ namespace The_Game
             while (Controls.Count > 0) Controls[0].Dispose();
         }
 
-        public void EndCutscene()
+        public void EndCutscene(Cutscene cutscene)
         {
             CutsceneShown = null;
             CurrentPanel = LevelShown;
             Stage = GameplayStage.InGame;
-            Game.EndCutscene();
+            if (cutscene != Cutscene.FinalCutscene)
+                Game.EndCutscene();
+            else
+            {
+                ResetWonGame();
+            }
+        }
+
+        private void ResetWonGame()
+        {
+            Timer.Stop();
+            Stage = GameplayStage.MainMenu;
+            Invalidate();
+            CurrentPanel = new MainMenuPanel(this);
+            Game = null;
+            LevelShown = null;
         }
 
         private void ChangeLevelPanel()
@@ -172,6 +194,8 @@ namespace The_Game
             pressedKeys.Add(e.KeyCode);
             if (Game != null && MobActions.ActionByKey.TryGetValue(e.KeyCode, out var keyAction))
                 Game.PlayerActions.Add(keyAction);
+            if (e.KeyCode == Keys.R && Stage == GameplayStage.InGame)
+                Game.TeleportToLevelStart();
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
@@ -191,7 +215,7 @@ namespace The_Game
             {
                 if (!CutsceneShown.MoveNextLine())
                 {
-                    EndCutscene();
+                    EndCutscene(Game.CurrentCutscene);
                 }
             }
             else

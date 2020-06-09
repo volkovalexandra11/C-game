@@ -51,8 +51,8 @@ namespace The_Game.Model
         public static bool IsStandingOnSurface(Level level, IEntity ent)
         {
             var possibleGround = new RectangleF(
-                ent.Hitbox.Left, ent.Hitbox.Bottom + 1e-3f,
-                ent.Hitbox.Width, 1e-3f
+                ent.Hitbox.Left + 0.1f, ent.Hitbox.Bottom + 1e-3f,
+                ent.Hitbox.Width - 0.2f, 1e-3f
             );
             return level.Entities
                 .Where(entity => !entity.Passable)
@@ -60,7 +60,6 @@ namespace The_Game.Model
                 otherEnt => !RectangleF.Intersect(possibleGround, otherEnt.Hitbox).IsEmpty
             );
         }
-
     }
 
     public static class RectangleFExtensions

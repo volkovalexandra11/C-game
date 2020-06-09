@@ -21,7 +21,7 @@ namespace The_Game.Levels
                 new Vector2(400, 700),
                 new List<IEntity>()
                 {
-                    new Background(size),
+                    new CountrysideBackground(size),
                     new Ground(new Size(1800, 300), new Point(0, 700)),
                     new Stump(game, new Size(100, 80), new Point(650, 620 + 10))
                 }.AsReadOnly()

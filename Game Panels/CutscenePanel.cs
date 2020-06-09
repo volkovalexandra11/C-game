@@ -15,6 +15,10 @@ namespace The_Game.Game_Panels
     {
         private GameForm Form { get; }
         private TextureBrush BackgroundBrush { get; }
+        private TextureBrush TextBoxBrush { get; }
+        
+        private readonly Size textboxSize = new Size(1600, 250);
+        private readonly string textboxName = "TextBox";
 
         private string[] CutsceneText;
         private int LineInd { get; set; }
@@ -37,14 +41,20 @@ namespace The_Game.Game_Panels
                 backgroundImg,
                 form.InternalSize
             );
+            TextBoxBrush = TextureLoader.LoadTextureBrush(
+                textboxName,
+                textboxSize
+            );
         }
 
         public override void Draw(Graphics g)
         {
             g.FillRectangle(BackgroundBrush,
                 new RectangleF(PointF.Empty, Form.InternalSize));
-            g.DrawString(CurrentLine, new Font("Arial", 30), Brushes.Black, new PointF(
-                Form.InternalSize.Width / 10, Form.InternalSize.Height / 6));
+            g.FillRectangle(TextBoxBrush,
+                new RectangleF(new PointF(100, 50), textboxSize));
+            g.DrawString(CurrentLine, new Font("Arial", 30), Brushes.Black,
+                new RectangleF(new PointF(130, 70), new Size(1450, 300)));
         }
     }
 }

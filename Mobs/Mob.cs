@@ -33,7 +33,7 @@ namespace The_Game.Mobs
         public virtual Dictionary<string, Size> TextureSizes { get; }
         public virtual Dictionary<string, Point> TextureMobPos { get; }
 
-        private readonly HashSet<MobAction> mobActions;
+        public readonly HashSet<MobAction> mobActions;
 
         private const float proximityConst = 400;
 
@@ -86,7 +86,7 @@ namespace The_Game.Mobs
         protected const int MinChangeDirTimeUpdates = 10;
         protected int UpdatesSinceChangeOfDir;
 
-        protected const int AttackTimeUpdates = 90;
+        protected virtual int AttackTimeUpdates => 30;
         protected int UpdatesSinceLastAttack;
 
         public RectangleF AttackZone
@@ -234,7 +234,7 @@ namespace The_Game.Mobs
             var distToPlayerHitbox = AttackRange + Game.GamePlayer.MobSize.Width / 2 + MobSize.Width / 2;
             if (distToPlayer < distToPlayerHitbox)
                 AttackPlayer();
-            else
+            else if (distToPlayer < 1050)
             {
                 ChooseWalkingDirection();
             }
@@ -277,7 +277,7 @@ namespace The_Game.Mobs
             }
         }
 
-        private void TakeDamage(Mob attacker, int dmg)
+        protected virtual void TakeDamage(Mob attacker, int dmg)
         {
             ThrowbackMob(attacker);
             HP -= dmg;

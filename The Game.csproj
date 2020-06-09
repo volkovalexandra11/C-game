@@ -65,6 +65,15 @@
     <Compile Include="Interfaces\ICutsceneTrigger.cs" />
     <Compile Include="Interfaces\ILevelBuilder.cs" />
     <Compile Include="Interfaces\IMob.cs" />
+    <Compile Include="Levels\ActiveLevels\CaveAscentLevelBuilder.cs" />
+    <Compile Include="Levels\ActiveLevels\CaveEntranceLevelBuilder.cs" />
+    <Compile Include="Levels\ActiveLevels\FinalRogueLevelBuilder.cs" />
+    <Compile Include="Levels\ActiveLevels\IntroLevelBuilder.cs" />
+    <Compile Include="Levels\ActiveLevels\KingBattleLevelBuilder.cs" />
+    <Compile Include="Levels\ActiveLevels\LivingQuartersLevelBuilder.cs" />
+    <Compile Include="Levels\ActiveLevels\MobIntroLevelBuilder.cs" />
+    <Compile Include="Levels\ActiveLevels\RebelLeaderLevelBuilder.cs" />
+    <Compile Include="Levels\ActiveLevels\UndeadLevelBuilder.cs" />
     <Compile Include="Levels\LevelData.cs" />
     <Compile Include="Levels\LevelForTest.cs" />
     <Compile Include="Levels\LevelForTestsWithGraph.cs" />
@@ -74,6 +83,7 @@
     <Compile Include="MobAI\MobPath.cs" />
     <Compile Include="MobAI\PathNode.cs" />
     <Compile Include="Mobs\Direction.cs" />
+    <Compile Include="Mobs\King.cs" />
     <Compile Include="Mobs\Mob.cs" />
     <Compile Include="Cutscenes\Cutscene.cs" />
     <Compile Include="Cutscenes\CutsceneFactory.cs" />
@@ -85,14 +95,22 @@
     <Compile Include="Interfaces\ICutscene.cs" />
     <Compile Include="Levels\DrawingPriority.cs" />
     <Compile Include="Levels\TestLevelBuilder.cs" />
+    <Compile Include="Mobs\Oldman.cs" />
+    <Compile Include="Mobs\Rebel.cs" />
+    <Compile Include="Mobs\RebelLeader.cs" />
     <Compile Include="Mobs\Rogue.cs" />
+    <Compile Include="Mobs\Skeleton.cs" />
     <Compile Include="Mobs\TextureDictsBuilders.cs" />
+    <Compile Include="Mobs\Zombie.cs" />
     <Compile Include="Model\Collisions.cs" />
     <Compile Include="Model\Entities.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
-    <Compile Include="GameForm.cs" />
+    <Compile Include="GameForm.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="GameForm.Designer.cs">
       <DependentUpon>GameForm.cs</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Model\GameState.cs" />
     <Compile Include="Mobs\MobState.cs" />
@@ -133,7 +151,22 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bensound-epic.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Texts\CutscenesText\CapitalReturnCutscene.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Texts\CutscenesText\FinalCutscene.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Texts\CutscenesText\HideoutCutscene.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Texts\CutscenesText\KickTheStumpCutscene.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Texts\CutscenesText\RebellionOverCutscene.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Texts\CutscenesText\StartCutscene.txt">
@@ -142,7 +175,16 @@
     <Content Include="Textures\Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Textures\Castle.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Textures\CastleCeremony.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\CaveBackground.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\CaveFloor.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Textures\CrumbledWall.png">
@@ -151,10 +193,19 @@
     <Content Include="Textures\Empty.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Textures\Final.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Textures\Ground.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Textures\Hideout.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Textures\KickingTheStump.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\King.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Textures\KnightAttackLeft.png">
@@ -175,6 +226,45 @@
     <Content Include="Textures\MainMenu.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Textures\OldmanAttackLeft.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\OldmanAttackRight.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\OldmanLeft.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\OldmanRight.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\RebelAttackLeft.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\RebelAttackRight.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\RebelLeaderAttackLeft.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\RebelLeaderAttackRight.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\RebelLeaderLeft.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\RebelLeaderRight.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\RebelLeft.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\RebellionOver.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\RebelRight.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Textures\RogueAttackLeft.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -187,16 +277,49 @@
     <Content Include="Textures\RogueRight.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Textures\RuinBackground.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\SkeletonAttackLeft.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\SkeletonAttackRight.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\SkeletonLeft.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\SkeletonRight.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Textures\SngButton.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Textures\SngButtonHover.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\SngButtonPressed.png">
+    <Content Include="Textures\Stump.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Stump.png">
+    <Content Include="Textures\TextBox.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\TutorialBackground.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\UndergroundWall.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\ZombieAttackLeft.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\ZombieAttackRight.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\ZombieLeft.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\ZombieRight.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

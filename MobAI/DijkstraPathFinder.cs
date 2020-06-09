@@ -17,20 +17,22 @@ namespace The_Game.MobAI
             Dictionary<Vector2, Dictionary<Vector2, float>> graph,
             IEnumerable<Tuple<Vector2, Mob>> targetsAndPositions)
         {
-            var targets = targetsAndPositions.ToDictionary(target => target.Item1, target => target.Item2);
+            var targets = targetsAndPositions.ToLookup(target => target.Item1, target => target.Item2);
+            var targetsLeft = targets.Count;
             var foundPaths = new Dictionary<Vector2, PathNode<Vector2>>();
             foundPaths[startPoint] = new PathNode<Vector2>(startPoint, 0, null);
             var pointsToOpen = new HashSet<Vector2>() { startPoint };
             var openedPoints = new HashSet<Vector2>();
-            while (targets.Count > 0 && pointsToOpen.Count > 0)
+            while (targetsLeft > 0 && pointsToOpen.Count > 0)
             {
                 var pointToOpen = pointsToOpen.MinBy(point => foundPaths[point].Cost);
                 pointsToOpen.Remove(pointToOpen);
                 var pointToOpenPath = foundPaths[pointToOpen];
-                if (targets.TryGetValue(pointToOpen, out var mob))
+                if (targets.Contains(pointToOpen))
                 {
-                    targets.Remove(pointToOpen);
-                    yield return new MobPath(mob, pointToOpenPath);
+                    targetsLeft--;
+                    foreach (var mob in targets[pointToOpen])
+                        yield return new MobPath(mob, pointToOpenPath);
                 }
                 openedPoints.Add(pointToOpen);
                 if (!graph.TryGetValue(pointToOpen, out var neighboursDists)) continue;

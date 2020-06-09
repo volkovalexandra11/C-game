@@ -25,7 +25,7 @@ namespace The_Game.Mobs
 
         public override string GetTexture()
         {
-            if (IsAttacking)
+            if (UpdatesSinceLastAttack < AttackTimeUpdates * 2 / 3)
             {
                 return Dir == Direction.Left
                     ? "RogueAttackLeft"
@@ -38,7 +38,7 @@ namespace The_Game.Mobs
 
         public Rogue(GameState game, Level level, Vector2 startPos)
             : base(game, level, true, RogueSize,
-                  DrawingPriority.Mob, startPos, 100, 20, 100)
+                  DrawingPriority.Mob, startPos, 100, 20, 70)
         {
             TextureSizes = TextureSizesBuilder.Build(
                 "RogueLeft", "RogueRight",

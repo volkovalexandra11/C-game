@@ -1,0 +1,61 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Numerics;
+using System.Text;
+using System.Threading.Tasks;
+using The_Game.Interfaces;
+using The_Game.Mobs;
+using The_Game.Model;
+
+namespace The_Game.Levels.ActiveLevels
+{
+    class MobIntroLevelBuilder : ILevelBuilder
+    {
+        public LevelData BuildData(GameState game, Level level)
+        {
+            var size = new Size(1800, 1000);
+            var entities = new List<IEntity>()
+            {
+                new CountrysideBackground(size),
+                new InvisibleWall(new Size(200, 1000), new Point(-200, 0)),
+                new Ground(new Size(2000, 300), new Point(-100, 800)),
+                new CrumbledWall(new Size(200, 700), new Point(0, 300)),
+                new Ground(new Size(900, 150), new Point(1000, 300)),
+                new Rogue(game, level, new Vector2(1600, 300)),
+                new Ladder(new Size(60, 500), new Point(940, 300)),
+                new LevelExit(game, new FinalRogueLevelBuilder(), new Size(200, 1000), new Point(1600, 0))
+            }.AsReadOnly();
+            var waypoints = new Vector2[]
+            {
+                new Vector2(1800, 300), new Vector2(1500, 300), new Vector2(1200, 300), new Vector2(900, 300),
+                new Vector2(750, 550), new Vector2(1050, 550),
+                new Vector2(200, 800), new Vector2(550, 800), new Vector2(900, 800), new Vector2(1200, 800),
+                new Vector2(1500, 800), new Vector2(1800, 800)
+            };
+            var adjacencyLists = new Vector2[][]
+            {
+                new [] { new Vector2(1800, 300), new Vector2(1500, 300) },
+                new [] { new Vector2(1500, 300), new Vector2(1800, 300), new Vector2(1200, 300) },
+                new [] { new Vector2(1200, 300), new Vector2(1500, 300), new Vector2(900, 300) },
+                new [] { new Vector2(900, 300), new Vector2(1200, 300), new Vector2(750, 550), new Vector2(1050, 550) },
+                new [] { new Vector2(750, 550), new Vector2(550, 800), new Vector2(900, 800) },
+                new [] { new Vector2(1050, 550), new Vector2(900, 800), new Vector2(1200, 800)},
+                new [] { new Vector2(200, 800), new Vector2(550, 800) },
+                new [] { new Vector2(550, 800), new Vector2(200, 800), new Vector2(900, 800) },
+                new [] { new Vector2(900, 800), new Vector2(550, 800), new Vector2(1200, 800) },
+                new [] { new Vector2(1200, 800), new Vector2(900, 800), new Vector2(1500, 800) },
+                new [] { new Vector2(1500, 800), new Vector2(1200, 800), new Vector2(1800, 800) },
+                new [] { new Vector2(1800, 800), new Vector2(1500, 800) }
+            };
+            return new LevelData(
+                size,
+                new Vector2(50, 300),
+                entities,
+                waypoints,
+                LevelData.GetReverseGraph(adjacencyLists)
+            );
+        }
+    }
+}

@@ -13,13 +13,11 @@ namespace The_Game.Game_Panels
     {
         private Image TextureDefault { get; }
         private Image TextureHover { get; }
-        private Image TexturePressed { get; }
 
-        public PictureButton(string img, string imgHover, string imgPressed)
+        public PictureButton(string img, string imgHover)
         {
             TextureDefault = TextureLoader.LoadImage(img);
             TextureHover = TextureLoader.LoadImage(imgHover);
-            TexturePressed = TextureLoader.LoadImage(imgPressed);
             BackgroundImage = TextureDefault;
             BackgroundImageLayout = ImageLayout.Stretch;
             FlatStyle = FlatStyle.Flat;
@@ -36,18 +34,6 @@ namespace The_Game.Game_Panels
         {
             BackgroundImage = TextureDefault;
             base.OnMouseLeave(e);
-        }
-
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            BackgroundImage = TexturePressed;
-            base.OnMouseDown(e);
-        }
-
-        protected override void OnMouseUp(MouseEventArgs mevent)
-        {
-            BackgroundImage = TextureHover;
-            base.OnMouseUp(mevent);
         }
     }
 }

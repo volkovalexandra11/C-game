@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -27,13 +28,14 @@ namespace The_Game.Mobs
 
         public override Dictionary<string, Size> TextureSizes { get; }
         public override Dictionary<string, Point> TextureMobPos { get; }
+        protected override int AttackTimeUpdates => 30;
 
         private const int MobPathsUpdateTimeUpdates = 80;
         private int TicksSinceLastUpdate { get; set; }
 
         public override string GetTexture()
         {
-            if (IsAttacking)
+            if (UpdatesSinceLastAttack < AttackTimeUpdates * 2 / 3)
             {
                 return Dir == Direction.Left
                     ? "KnightAttackLeft"
@@ -59,13 +61,16 @@ namespace The_Game.Mobs
             else
                 TicksSinceLastUpdate++;
             base.Update();
+            var pos = Pos;
+            if (pos.X > 1800 || pos.X < 0 || pos.Y < -100 || pos.Y > 1000)
+                Pos = MobLevel.StartPos;
         }
 
         public Player(GameState game)
             : base
             (
                   game, null, true, PlayerSize, DrawingPriority.Player,
-                  Vector2.Zero, 1000, 30, 100
+                  Vector2.Zero, 300, 45, 150
             )
         {
             State = MobState.Walking;
@@ -91,6 +96,17 @@ namespace The_Game.Mobs
             ))
             {
                 pathToPlayer.Mob.PlannedPath = pathToPlayer.FirstWP;
+            }
+        }
+
+        protected override void TakeDamage(Mob attacker, int dmg)
+        {
+            base.TakeDamage(attacker, dmg);
+            if (IsDead)
+            {
+                HP = MaxHP;
+                Pos = MobLevel.StartPos;
+                mobActions.Clear();
             }
         }
 

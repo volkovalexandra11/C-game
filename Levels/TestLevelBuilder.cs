@@ -23,7 +23,7 @@ namespace The_Game.Levels
                 new Vector2(400, 700),
                 new List<IEntity>()
                 {
-                    new Background(size),
+                    new CountrysideBackground(size),
                     new Ground(new Size(1800, 300), new Point(0, 700)),
                     new CrumbledWall(new Size(150, 400), new Point(100, 300 + 10)),
                     new CrumbledWall(new Size(200, 250), new Point(1500, 0 + 10)),

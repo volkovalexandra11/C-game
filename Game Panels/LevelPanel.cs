@@ -19,8 +19,8 @@ namespace The_Game.Game_Panels
     [System.ComponentModel.DesignerCategory("")]
     class LevelPanel : GamePanel
     {
-        private static readonly bool DrawWaypointsOn = true;
-        private static readonly bool DrawAttackZonesOn = true;
+        private static readonly bool DrawWaypointsOn = false;
+        private static readonly bool DrawAttackZonesOn = false;
 
         private Level PanelLevel { get; }
         public readonly Dictionary<IEntity, Dictionary<string, TextureBrush>> Textures;

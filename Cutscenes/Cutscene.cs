@@ -10,6 +10,10 @@ namespace The_Game.Cutscenes
     {
         None,
         StartCutscene,
+        HideoutCutscene,
+        RebellionOverCutscene,
+        CapitalReturnCutscene,
+        FinalCutscene,
         KickTheStumpCutscene
     }
 }

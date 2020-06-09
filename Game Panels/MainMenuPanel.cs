@@ -29,13 +29,13 @@ namespace The_Game.Game_Panels
         private void InitializeMenuTable(TableLayoutPanel menuTable, Button startButton)
         {
             menuTable.RowStyles.Clear();
-            menuTable.RowStyles.Add(new RowStyle(SizeType.Percent, 70));
-            menuTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 200));
-            menuTable.RowStyles.Add(new RowStyle(SizeType.Percent, 20));
+            menuTable.RowStyles.Add(new RowStyle(SizeType.Percent, 40));
+            menuTable.RowStyles.Add(new RowStyle(SizeType.Percent, 15));
+            menuTable.RowStyles.Add(new RowStyle(SizeType.Percent, 30));
 
-            menuTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 35));
-            menuTable.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 500));
-            menuTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 35));
+            menuTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10));
+            menuTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30));
+            menuTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 75));
 
             menuTable.Dock = DockStyle.Fill;
             menuTable.Controls.Add(startButton, 1, 1);
@@ -60,8 +60,7 @@ namespace The_Game.Game_Panels
         private static Button GetNewGameButton()
            => new PictureButton(
                 "SngButton",
-                "SngButtonHover",
-                "SngButtonPressed"
+                "SngButtonHover"
            )
            { 
                Dock = DockStyle.Fill,
